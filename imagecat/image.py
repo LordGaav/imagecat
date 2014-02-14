@@ -17,6 +17,11 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""
+Functions to manipulate images. All methods that process images expect a 
+properly initiated PIL Image object.
+"""
+
 # I want PROPER divisions, please
 from __future__ import division
 import Image
@@ -25,6 +30,12 @@ HORIZONTAL = 0
 VERTICAL = 1
 
 def cropresize(im, size, mode=Image.BICUBIC):
+	""" 
+	Scales a PIL Image to the specified size, cropping the parts that
+	would fall outside the specified dimensions. A PIL resize mode may be
+	specified, bicubic resize is the default, use NEAREST/BILINEAR/BICUBIC
+	globals specified in the PIL Image module.
+	"""
 	orig = im.size
 
 	if orig[0] < orig[1]:
@@ -42,6 +53,12 @@ def cropresize(im, size, mode=Image.BICUBIC):
 	return intermediate.crop((leftx, lefty, leftx + size[0], lefty + size[1]))
 
 def montage(images, direction):
+	"""
+	Takes a list of PIL Images, and 'concatenates' them in the specified direction.
+	The result is on big PIL Image with all specified Images contained in it.
+	If the list contains Images of different sizes, the resulting images will have
+	gaps.
+	"""
 	totalx = 0
 	totaly = 0
 
