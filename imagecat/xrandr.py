@@ -31,11 +31,9 @@ class XRandr(object):
 	displays = []
 	"""
 	Contains the found displays according to `xrandr`, represented as a list
-	of tuples containing:
-	(display name, connection state, primary?, width in px, height in px, horizontal offset in px, 
-	vertical offset in px, height in mm, width in mm)
-	The first two values are always set. If the connection state is disconnected, the rest of
-	the values will probably be empty.
+	of dicts containing at least: name, state, primary?.
+	If the state of the displays is 'connected', the following fields are also set:
+	resolution, offset, size.
 	"""
 
 	def __init__(self):
@@ -57,8 +55,19 @@ class XRandr(object):
 		from the internal displays field. To refresh, call parse_xrandr() manually.
 		"""
 		output = self._call_xrandr()[0]
+		displays = self.randr_regex.findall(output)
+		self.displays = []
 
-		self.displays = self.randr_regex.findall(output)
+		for d in displays:
+			e = {}
+			e['name'] = d[0]
+			e['state'] = d[1]
+			e['primary'] = True if d[2] == 'primary' else False
+			if d[1] == "connected":
+				e['resolution'] = (int(d[3]), int(d[4]))
+				e['offset'] = (int(d[5]), int(d[6]))
+				e['size'] = (int(d[7].replace("mm", "")), int(d[8].replace("mm", "")))
+			self.displays.append(e)
 
 		return self.displays
 
