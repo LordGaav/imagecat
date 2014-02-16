@@ -28,9 +28,23 @@ import tempfile
 from argparse import ArgumentParser
 
 config_parser = ArgumentParser(description="Looking for config", add_help=False)
-config_parser.add_argument('--config', metavar='CONFIG', type=str)
+config_parser.add_argument('--config',  metavar='CONFIG', type=str)
+config_parser.add_argument("--quiet", action="store_true", default=False)
+config_parser.add_argument("--verbose", action="store_true", default=False)
 
 config_arg, config_unknown = config_parser.parse_known_args()
+
+log_handlers = {}
+log_handlers['syslog'] = None
+loglevel = "INFO"
+if config_arg.verbose:
+	loglevel = "DEBUG"
+if not config_arg.quiet:
+	log_handlers['console'] = None
+
+logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
+
+logger.info("{0} version {1} starting...".format(imagecat.NAME, imagecat.VERSION))
 
 config = imagecat.getConfig(config_arg)
 
@@ -42,18 +56,6 @@ arg_parser.add_argument("--dry-run",  action="store_true",     default=config.ge
 arg_parser.add_argument("--quiet",    action="store_true",     default=config.get("quiet", False),					help="Don't print messages to stdout")
 arg_parser.add_argument("--verbose",  action="store_true",     default=config.get("verbose", False),				help="Output debug messages")
 args = arg_parser.parse_args()
-
-log_handlers = {}
-log_handlers['syslog'] = None
-loglevel = "INFO"
-if args.verbose:
-	loglevel = "DEBUG"
-if not args.quiet:
-	log_handlers['console'] = None
-
-logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
-
-logger.info("{0} version {1} starting...".format(imagecat.NAME, imagecat.VERSION))
 
 if args.imagedir == None:
 	logger.error("No imagedir specified, exiting...")
