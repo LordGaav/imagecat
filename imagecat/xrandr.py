@@ -61,9 +61,12 @@ class XRandr(object):
 		for d in displays:
 			e = {}
 			e['name'] = d[0]
-			e['state'] = d[1]
+			if d[1] == "connected" and d[3] == "":
+				e['state'] = "inactive"
+			else:
+				e['state'] = d[1]
 			e['primary'] = True if d[2] == 'primary' else False
-			if d[1] == "connected":
+			if e['state'] == "connected":
 				e['resolution'] = (int(d[3]), int(d[4]))
 				e['offset'] = (int(d[5]), int(d[6]))
 				e['size'] = (int(d[7].replace("mm", "")), int(d[8].replace("mm", "")))
