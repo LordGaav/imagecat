@@ -17,7 +17,7 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import Gio
+from gi.repository import Gio, GLib
 
 SCALECROP = 0
 SCALE = 1
@@ -68,21 +68,21 @@ class WallpaperPluginSettings(object):
 
 	def _set_hexstring_array(self, key, lst):
 		""" Set a list of hexadecimal strings to a key in GConf. The input is validated.  """
-		if not self._check_list_type(colors, "hex"):
+		if not self._check_list_type(lst, "hex"):
 			raise TypeError("List of %s contains non-hexadecimal strings" % key)
-		return self.settings.set_strv(key, lst)
+		return self.settings.set_value(key, GLib.Variant("as", lst))
 
 	def _set_string_array(self, key, lst):
 		""" Set a list of strings to a key in GConf. The input is validated. """
-		if not self._check_list_type(colors, basestring):
+		if not self._check_list_type(lst, basestring):
 			raise TypeError("List of %s contains non-strings" % key)
-		return self.settings.set_strv(key, lst)
+		return self.settings.set_value(key, GLib.Variant("as", lst))
 
 	def _set_int_array(self, key, lst):
 		""" Set a list of integers to a key in GConf. The input is validated. """
-		if not self._check_list_type(colors, int):
+		if not self._check_list_type(lst, int):
 			raise TypeError("List of %s contains non-hexadecimal strings" % key)
-		return self.settings.set_value(key, lst)
+		return self.settings.set_value(key, GLib.Variant("ai", lst))
 	
 	def get_bg_image(self):
 		""" Retrieve the currently set background images from GConf. """
