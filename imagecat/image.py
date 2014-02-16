@@ -26,9 +26,6 @@ properly initiated PIL Image object.
 from __future__ import division
 import Image
 
-HORIZONTAL = 0
-VERTICAL = 1
-
 def cropresize(im, size, mode=Image.BICUBIC):
 	""" 
 	Scales a PIL Image to the specified size, cropping the parts that
@@ -52,35 +49,30 @@ def cropresize(im, size, mode=Image.BICUBIC):
 	
 	return intermediate.crop((leftx, lefty, leftx + size[0], lefty + size[1]))
 
-def montage(images, direction):
+def montage(images, offsets):
 	"""
-	Takes a list of PIL Images, and 'concatenates' them in the specified direction.
-	The result is on big PIL Image with all specified Images contained in it.
-	If the list contains Images of different sizes, the resulting images will have
-	gaps.
+	Takes a list of PIL Images and offsets, and montages together. The result is 
+	one big PIL Image with all specified Images contained in it, at the specified
+	offsets.
 	"""
 	totalx = 0
 	totaly = 0
 
-	for image in images:
-		if direction == HORIZONTAL:
-			totalx += image.size[0]
-			if image.size[1] > totaly:
-				totaly = image.size[1]
-		else:
-			totaly += image.size[1]
-			if image.size[0] > totalx:
-				totalx = image.size[0]
-	
+	for image, offset in zip(images, offsets):
+		size = image.size
+		if (offset[0] > size[0] and (offset[0] + size[0]) > totalx):
+			totalx = offset[0] + size[0]
+		if (offset[1] > size[1] and (offset[1] + size[1]) > totaly):
+			totaly = offset[1] + size[1]
+
+		if totalx == 0 or (offset[0] + size[0]) > totalx:
+			totalx = (offset[0] + size[0])
+		if totaly == 0 or (offset[1] + size[1]) > totaly:
+			totaly = (offset[1] + size[1])
+
 	canvas = Image.new("RGB", (totalx, totaly))
 
-	pointer = 0
-	for image in images:
-		if direction == HORIZONTAL:
-			canvas.paste(image, (pointer, 0))
-			pointer += image.size[0]
-		else:
-			canvas.paste(image, (0, pointer))
-			pointer += image.size[1]
+	for image, offset in zip(images, offsets):
+		canvas.paste(image, (offset[0], offset[1]))
 	
 	return canvas
