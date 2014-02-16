@@ -83,6 +83,18 @@ class WallpaperPluginSettings(object):
 		if not self._check_list_type(lst, int):
 			raise TypeError("List of %s contains non-hexadecimal strings" % key)
 		return self.settings.set_value(key, GLib.Variant("ai", lst))
+
+	def delay(self):
+		""" Enable delay mode. Revert active changes with revert(). Apply them with apply(). """
+		return self.settings.delay()
+
+	def revert(self):
+		""" Revert active changes. Only valid after delay(). """
+		return self.settings.revert()
+
+	def apply(self):
+		""" Apply active changes. Only valid after delay(). """
+		return self.settings.apply()
 	
 	def get_bg_image(self):
 		""" Retrieve the currently set background images from GConf. """
