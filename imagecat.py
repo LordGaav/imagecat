@@ -62,7 +62,7 @@ if args.imagedir == None:
 from imagecat.globber import Globber
 from imagecat.image import *
 from imagecat.randomizer import Randomizer
-from imagecat.wallpaperpluginsettings import *
+from imagecat.gconf import *
 from imagecat.xrandr import XRandr
 import Image
 

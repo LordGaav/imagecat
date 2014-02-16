@@ -29,20 +29,8 @@ SOLIDFILL = 0
 GRADIENTVERT = 1
 GRADIENTHORIZ = 2
 
-class WallpaperPluginSettings(object):
-	"""
-	Sets and retrieves settings for the Compiz Wallpaper plugin.
-	"""
-
-	default_profile = "unity"
-	""" Default GConf profile to use. Ubuntu uses "unity" by default.  """
-	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
-	""" Base key where the Wallpaper plugins keeps its settings in GConf. """
-	schema_key = "org.compiz.wallpaper"
-	""" Schema definition for Wallpaper plugin's settings. """
-
-	def __init__(self, profile=None):
-		self._init_settings(profile)
+class GConfWrapper(object):
+	""" Convenience wrapper around Gio.Settings. """
 
 	def _init_settings(self, profile=None):
 		""" Refreshes the internal GConf settings handle.  """
@@ -95,6 +83,21 @@ class WallpaperPluginSettings(object):
 	def apply(self):
 		""" Apply active changes. Only valid after delay(). """
 		return self.settings.apply()
+
+class WallpaperPluginSettings(GConfWrapper):
+	"""
+	Sets and retrieves settings for the Compiz Wallpaper plugin.
+	"""
+
+	default_profile = "unity"
+	""" Default GConf profile to use. Ubuntu uses "unity" by default.  """
+	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
+	""" Base key where the Wallpaper plugins keeps its settings in GConf. """
+	schema_key = "org.compiz.wallpaper"
+	""" Schema definition for Wallpaper plugin's settings. """
+
+	def __init__(self, profile=None):
+		self._init_settings(profile)
 	
 	def get_bg_image(self):
 		""" Retrieve the currently set background images from GConf. """
