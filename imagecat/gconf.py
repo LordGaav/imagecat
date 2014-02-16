@@ -84,6 +84,30 @@ class GConfWrapper(object):
 		""" Apply active changes. Only valid after delay(). """
 		return self.settings.apply()
 
+class CorePluginSettings(GConfWrapper):
+	"""
+	Retrieves settings for the Compiz Core plugin.
+	"""
+
+	default_profile = "unity"
+	""" Default GConf profile to use. Ubuntu uses "unity" by default.  """
+	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
+	""" Base key where the Core plugin keeps its settings in GConf. """
+	schema_key = "org.compiz.core"
+	""" Schema definition for Core plugin's settings. """
+
+	def __init__(self, profile=None):
+		self._init_settings(profile)
+
+	def get_hsize(self):
+		""" Retrieve the amount of workspaces (horizontally). """
+		return self.settings.get_int("hsize")
+
+	def get_vsize(self):
+		""" Retrieve the amount of workspaces (vertically). """
+		return self.settings.get_int("vsize")
+
+
 class WallpaperPluginSettings(GConfWrapper):
 	"""
 	Sets and retrieves settings for the Compiz Wallpaper plugin.
@@ -92,7 +116,7 @@ class WallpaperPluginSettings(GConfWrapper):
 	default_profile = "unity"
 	""" Default GConf profile to use. Ubuntu uses "unity" by default.  """
 	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
-	""" Base key where the Wallpaper plugins keeps its settings in GConf. """
+	""" Base key where the Wallpaper plugin keeps its settings in GConf. """
 	schema_key = "org.compiz.wallpaper"
 	""" Schema definition for Wallpaper plugin's settings. """
 
@@ -140,6 +164,9 @@ class WallpaperPluginSettings(GConfWrapper):
 		return self._set_int_array("bg-image-pos", pos)
 
 if __name__ == "__main__":
+	c = CorePluginSettings()
+	print c.get_hsize()
+	print c.get_vsize()
 	w = WallpaperPluginSettings()
 	print w.get_bg_image()
 	print w.get_bg_color1()
