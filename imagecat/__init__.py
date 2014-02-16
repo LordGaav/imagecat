@@ -55,24 +55,32 @@ def getLogger(name, level=logging.INFO, handlers=[]):
 
 	return logger
 
-def getConfig(config_arg):
+def getConfig(config_arg, debug_log=False, console=True):
+	logger = getLogger("imagecat.getConfig", logging.DEBUG if debug_log else logging.INFO)
+
+	logger.debug("Expanding variables")
 	home = os.path.expanduser("~")
 	loc = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 	# Config file provided on command line has preference
 	if config_arg.config:
+		logger.debug("Loading config from cli arguments")
 		config = ConfigObj(config_arg.config)
 	# Next up, user specific config
-	elif os.path.isfile(os.path.join(home, ".rsscat.config")):
-		config = ConfigObj(os.path.join(home, ".rsscat.config"))
+	elif os.path.isfile(os.path.join(home, ".imagecat.config")):
+		logger.debug("Loading config from homedir")
+		config = ConfigObj(os.path.join(home, ".imagecat.config"))
 	# Next up: system-wide config (Unix specific)
-	elif os.path.isfile("/etc/rsscat.config"):
-		config = ConfigObj("/etc/rsscat.config")
+	elif os.path.isfile("/etc/imagecat.config"):
+		logger.debug("Loading config from /etc")
+		config = ConfigObj("/etc/imagecat.config")
 	# Next up: config file in program dir
-	elif os.path.isfile(os.path.join(loc, "rsscat.config")):
-		config = ConfigObj(os.path.join(loc, "rsscat.config"))
+	elif os.path.isfile(os.path.join(loc, "imagecat.config")):
+		logger.debug("Loading config from workingdir")
+		config = ConfigObj(os.path.join(loc, "imagecat.config"))
 	# Give up, we have no config file
 	else:
+		logger.debug("Not loading any config")
 		config = ConfigObj()
 
 	return config
