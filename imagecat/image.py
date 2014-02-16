@@ -34,13 +34,16 @@ def cropresize(im, size, mode=Image.BICUBIC):
 	globals specified in the PIL Image module.
 	"""
 	orig = im.size
+	orig_ratio = orig[0] / orig[1]
+	size_ratio = size[0] / size[1]
 
-	if orig[0] < orig[1]:
-		newx = int((orig[0] / orig[1]) * size[1])
-		intermediate = im.resize((newx, size[1]), mode)
-	else:
-		newy = int((orig[1] / orig[0]) * size[0])
+
+	if size_ratio > 1:
+		newy = int(size[0] / orig_ratio)
 		intermediate = im.resize((size[0], newy), mode)
+	else:
+		newx = int(size[1] * orig_ratio)
+		intermediate = im.resize((newx, size[1]), mode)
 	
 	isize = intermediate.size
 
