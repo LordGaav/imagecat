@@ -59,7 +59,7 @@ class WallpaperPluginSettings(object):
 		"""
 		if tp == "hex":
 			try:
-				filtered = filter(lambda x: int(x, 16), lst)
+				filtered = map(lambda x: int(x, 16), lst)
 			except:
 				return False
 		else:
