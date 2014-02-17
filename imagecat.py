@@ -28,7 +28,7 @@ import tempfile
 from argparse import ArgumentParser, SUPPRESS
 
 config_parser = ArgumentParser(description="Looking for config", add_help=False)
-config_parser.add_argument('--config',  metavar='CONFIG', type=str)
+config_parser.add_argument('--config', type=str)
 config_parser.add_argument("--help", action="store_true", default=False)
 config_parser.add_argument("--quiet", action="store_true", default=False)
 config_parser.add_argument("--verbose", action="store_true", default=False)
@@ -58,6 +58,7 @@ config = imagecat.getConfig(config_arg)
 
 arg_parser = ArgumentParser(description="{0} is an automatic wallpaper changer".format(imagecat.NAME))
 arg_parser.add_argument("--automatic", action="store_true",     default=False, 											help=SUPPRESS)
+arg_parser.add_argument("--config",    metavar="CFG", type=str, 														help="Config file to load")
 arg_parser.add_argument("--imagedir",  metavar="DIR", type=str, default=config.get("imagedir", None), 					help="Where to look for wallpapers")
 arg_parser.add_argument("--tmpdir",    metavar="DIR", type=str, default=config.get("tmpdir", tempfile.gettempdir()),	help="Where to store intermediate files")
 arg_parser.add_argument("--desktops",  metavar="D",   type=int, default=config.get("desktops", 1),						help="Amount of desktops (not physical monitors)")
