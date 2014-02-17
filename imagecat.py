@@ -25,7 +25,7 @@ if sys.version_info < (2, 7):
 
 import imagecat
 import tempfile
-from argparse import ArgumentParser
+from argparse import ArgumentParser, SUPPRESS
 
 config_parser = ArgumentParser(description="Looking for config", add_help=False)
 config_parser.add_argument('--config',  metavar='CONFIG', type=str)
@@ -44,18 +44,23 @@ if not config_arg.quiet:
 
 logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
 
-logger.info("{0} version {1} starting...".format(imagecat.NAME, imagecat.VERSION))
+logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
 
 config = imagecat.getConfig(config_arg)
 
 arg_parser = ArgumentParser(description="{0} is an automatic wallpaper changer".format(imagecat.NAME))
-arg_parser.add_argument("--imagedir", metavar="DIR", type=str, default=config.get("imagedir", None), 				help="Where to look for wallpapers")
-arg_parser.add_argument("--tmpdir",   metavar="DIR", type=str, default=config.get("tmpdir", tempfile.gettempdir()),	help="Where to store intermediate files")
-arg_parser.add_argument("--desktops", metavar="D",   type=int, default=config.get("desktops", 1),					help="Amount of desktops (not physical monitors)")
-arg_parser.add_argument("--dry-run",  action="store_true",     default=config.get("dry-run", False),				help="Print what would've happened, but don't execute actions")
-arg_parser.add_argument("--quiet",    action="store_true",     default=config.get("quiet", False),					help="Don't print messages to stdout")
-arg_parser.add_argument("--verbose",  action="store_true",     default=config.get("verbose", False),				help="Output debug messages")
+arg_parser.add_argument("--automatic", action="store_true",     default=False, 											help=SUPPRESS)
+arg_parser.add_argument("--imagedir",  metavar="DIR", type=str, default=config.get("imagedir", None), 					help="Where to look for wallpapers")
+arg_parser.add_argument("--tmpdir",    metavar="DIR", type=str, default=config.get("tmpdir", tempfile.gettempdir()),	help="Where to store intermediate files")
+arg_parser.add_argument("--desktops",  metavar="D",   type=int, default=config.get("desktops", 1),						help="Amount of desktops (not physical monitors)")
+arg_parser.add_argument("--dry-run",   action="store_true",     default=config.get("dry-run", False),					help="Print what would've happened, but don't execute actions")
+arg_parser.add_argument("--quiet",     action="store_true",     default=config.get("quiet", False),						help="Don't print messages to stdout")
+arg_parser.add_argument("--verbose",   action="store_true",     default=config.get("verbose", False),					help="Output debug messages")
 args = arg_parser.parse_args()
+
+if args.automatic and config.get("autostart", 'False') == 'False':
+	logger.info("Started automatically, but autostart is not enabled, exiting...")
+	sys.exit(0)
 
 if args.imagedir == None:
 	logger.error("No imagedir specified, exiting...")

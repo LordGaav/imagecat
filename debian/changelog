@@ -1,0 +1,30 @@
+imagecat (0.1ubuntu1~1.gbp27fe94) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @27fe94472a25c5c79397dc965c9e2fe7005f081d **
+
+  * Initial release. (Closes: #XXXXXX)
+  * Add first PoC using PIL
+  * Create dir structure, and add license information
+  * Add some method and module documentation
+  * Add obligatory __init__.py
+  * Ignore compiled python files
+  * Add Randomizer
+  * Add XRandr class
+  * Add WallpaperPluginSettings
+  * Add some global functions to __init__
+  * Add Globber
+  * Change XRandr to work with dicts instead of tuples.
+  * Rework montage to use offsets
+  * Accidentially used filter instead of map
+  * Cast all values to Variant instead of using convenience functions.
+  * Expose delay, revert and apply from GLib.Settings.
+  * Add imagecat.py
+  * Move generic GConf parts from WallpaperPluginSettings to GConfWrapper
+  * Add CorePluginSettings
+  * Make cropresize change depending on screen orientation
+  * Initialize logger setting sooner to enable logging configuration loading.
+  * Add logging to getConfig
+  * Add loader script for use with Startup Applications
+  * Add support for monitors that are connected but not used.
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Mon, 17 Feb 2014 11:44:44 +0100
