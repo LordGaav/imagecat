@@ -29,13 +29,16 @@ from argparse import ArgumentParser, SUPPRESS
 
 config_parser = ArgumentParser(description="Looking for config", add_help=False)
 config_parser.add_argument('--config',  metavar='CONFIG', type=str)
+config_parser.add_argument("--help", action="store_true", default=False)
 config_parser.add_argument("--quiet", action="store_true", default=False)
 config_parser.add_argument("--verbose", action="store_true", default=False)
+config_parser.add_argument("--version", action="store_true", default=False)
 
 config_arg, config_unknown = config_parser.parse_known_args()
 
 log_handlers = {}
-log_handlers['syslog'] = None
+if not config_arg.version and not config_arg.help:
+	log_handlers['syslog'] = None
 loglevel = "INFO"
 if config_arg.verbose:
 	loglevel = "DEBUG"
@@ -44,7 +47,12 @@ if not config_arg.quiet:
 
 logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
 
-logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
+if config_arg.version:
+	logger.info("{0} version {1} ({2})".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
+	sys.exit(0)
+
+if not config_arg.help:
+	logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
 
 config = imagecat.getConfig(config_arg)
 
@@ -56,6 +64,7 @@ arg_parser.add_argument("--desktops",  metavar="D",   type=int, default=config.g
 arg_parser.add_argument("--dry-run",   action="store_true",     default=config.get("dry-run", False),					help="Print what would've happened, but don't execute actions")
 arg_parser.add_argument("--quiet",     action="store_true",     default=config.get("quiet", False),						help="Don't print messages to stdout")
 arg_parser.add_argument("--verbose",   action="store_true",     default=config.get("verbose", False),					help="Output debug messages")
+arg_parser.add_argument("--version",   action="store_true",     default=False,											help="Display version information and exit")
 args = arg_parser.parse_args()
 
 if args.automatic and config.get("autostart", 'False') == 'False':
