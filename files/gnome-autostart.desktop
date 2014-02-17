@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=imagecat
+Icon=imagecat
 Comment=Change wallpapers automatically
 Exec=/usr/share/imagecat/loader.sh
 Terminal=false
