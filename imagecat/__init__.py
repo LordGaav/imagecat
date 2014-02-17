@@ -19,6 +19,7 @@
 
 NAME = "imagecat"
 VERSION = "0.1"
+BUILD = "43b5be8"
 
 import logging, logging.handlers, os, pwd, grp, sys, inspect
 from configobj import ConfigObj
@@ -62,26 +63,32 @@ def getConfig(config_arg, debug_log=False, console=True):
 	home = os.path.expanduser("~")
 	loc = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
+	logger.debug("Create empty config")
+	config = ConfigObj()
+
+	# Merge in config file in program dir
+	if os.path.isfile(os.path.join(loc, "imagecat.config")):
+		logger.debug("Loading config from workingdir")
+		cfg = ConfigObj(os.path.join(loc, "imagecat.config"))
+		config.merge(cfg)
+
+	# Merge in system-wide config (Unix specific)
+	if os.path.isfile("/etc/imagecat.config"):
+		logger.debug("Loading config from /etc")
+		cfg = ConfigObj("/etc/imagecat.config")
+		config.merge(cfg)
+
+	# Merge in user specific config
+	if os.path.isfile(os.path.join(home, ".imagecat.config")):
+		logger.debug("Loading config from homedir")
+		cfg = ConfigObj(os.path.join(home, ".imagecat.config"))
+		config.merge(cfg)
+
 	# Config file provided on command line has preference
 	if config_arg.config:
 		logger.debug("Loading config from cli arguments")
-		config = ConfigObj(config_arg.config)
-	# Next up, user specific config
-	elif os.path.isfile(os.path.join(home, ".imagecat.config")):
-		logger.debug("Loading config from homedir")
-		config = ConfigObj(os.path.join(home, ".imagecat.config"))
-	# Next up: system-wide config (Unix specific)
-	elif os.path.isfile("/etc/imagecat.config"):
-		logger.debug("Loading config from /etc")
-		config = ConfigObj("/etc/imagecat.config")
-	# Next up: config file in program dir
-	elif os.path.isfile(os.path.join(loc, "imagecat.config")):
-		logger.debug("Loading config from workingdir")
-		config = ConfigObj(os.path.join(loc, "imagecat.config"))
-	# Give up, we have no config file
-	else:
-		logger.debug("Not loading any config")
-		config = ConfigObj()
+		cfg = ConfigObj(config_arg.config)
+		config.merge(cfg)
 
 	return config
 

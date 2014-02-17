@@ -1,0 +1,32 @@
+[configuration]
+
+imagecat will look in multiple locations for a configuration file:
+
+ 1. 
+.B --config
+option
+ 2. ~/.imagecat.config
+ 3. /etc/imagecat.config
+ 4. imagecat.config in /usr/share/imagecat
+
+Configuration files are applied according to their priority, meaning that options in /etc/imagecat.config can be overridden using ~/.imagecat.config, which in turn can be overridden by specifying another configuration file with 
+.B --config
+.
+
+Most cli options can be specified in the configuration file, the most useful options are probably:
+
+.B imagedir
+: directory of images to load. All files ending with extensions *.jpg, *.jpeg, *.gif and *.png are loaded. Directories are traversed recursively.
+
+.B desktops
+: amount of virtual desktops.
+
+[debian specific]
+The Debian package will by default install a file in /etc/imagecat.config, and use the 
+.B autostart
+option to disable automatically running imagecat. Imagecat will be automatically started when a user logs into Gnome/Unity, but will not actually run until /etc/imagecat.config is edited to allow autostart, or until an user creates ~/.imagecat.config to achieve the same thing. The default /etc/imagecat.config will try to look for wallpapers in /usr/share/wallpapers, an user will probably want to override this with their own directory.
+
+[known issues]
+I have not yet found a reliable way to determine the amount of virtual desktops. For now, this has to be specified manually using 
+.B --desktops
+.
