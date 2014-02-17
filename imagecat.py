@@ -61,7 +61,6 @@ arg_parser.add_argument("--automatic", action="store_true",     default=False, 	
 arg_parser.add_argument("--imagedir",  metavar="DIR", type=str, default=config.get("imagedir", None), 					help="Where to look for wallpapers")
 arg_parser.add_argument("--tmpdir",    metavar="DIR", type=str, default=config.get("tmpdir", tempfile.gettempdir()),	help="Where to store intermediate files")
 arg_parser.add_argument("--desktops",  metavar="D",   type=int, default=config.get("desktops", 1),						help="Amount of desktops (not physical monitors)")
-arg_parser.add_argument("--dry-run",   action="store_true",     default=config.get("dry-run", False),					help="Print what would've happened, but don't execute actions")
 arg_parser.add_argument("--quiet",     action="store_true",     default=config.get("quiet", False),						help="Don't print messages to stdout")
 arg_parser.add_argument("--verbose",   action="store_true",     default=config.get("verbose", False),					help="Output debug messages")
 arg_parser.add_argument("--version",   action="store_true",     default=False,											help="Display version information and exit")
