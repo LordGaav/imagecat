@@ -17,7 +17,7 @@ source_no_sign:
 	dpkg-buildpackage -S -us
 
 upload_to_ppa:
-	dput ppa:lordgaav/vsphere-client "$(CHANGES)"
+	dput ppa:lordgaav/imagecat "$(CHANGES)"
 
 pbuild:
 	pbuilder-dist "$(DIST)" "$(CHANGES)"
