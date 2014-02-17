@@ -44,7 +44,7 @@ if not config_arg.quiet:
 
 logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
 
-logger.info("{0} version {1} starting...".format(imagecat.NAME, imagecat.VERSION))
+logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
 
 config = imagecat.getConfig(config_arg)
 
