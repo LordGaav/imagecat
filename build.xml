@@ -139,6 +139,7 @@ ${files.dir}/debian-default.config => etc/imagecat.config
 		<delete file="${debian.dir}/libs" />
 		<delete file="${debian.dir}/${executable}.install.tmp" />
 		<echo file="${debian.dir}/${executable}.links" append="false">${debian.bin.dir}/${executable}.py /usr/bin/${executable}</echo>
+		<echo file="${debian.dir}/${executable}.manpages" append="false">${debian.dir}/${executable}.1</echo>
 		<copy file="README" tofile="${debian.dir}/${executable}.README.Debian" />
 	</target>
 
