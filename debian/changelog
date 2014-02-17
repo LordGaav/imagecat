@@ -1,8 +1,5 @@
-imagecat (0.1ubuntu1~1.gbp27fe94) UNRELEASED; urgency=low
+imagecat (0.1) saucy; urgency=low
 
-  ** SNAPSHOT build @27fe94472a25c5c79397dc965c9e2fe7005f081d **
-
-  * Initial release. (Closes: #XXXXXX)
   * Add first PoC using PIL
   * Create dir structure, and add license information
   * Add some method and module documentation
@@ -26,5 +23,30 @@ imagecat (0.1ubuntu1~1.gbp27fe94) UNRELEASED; urgency=low
   * Add logging to getConfig
   * Add loader script for use with Startup Applications
   * Add support for monitors that are connected but not used.
+  * Add autostart .desktop file for Gnome
+  * Add icons
+  * Add build number to version
+  * Extend .gitignore
+  * Add Ant build script and Debian control files
+  * Add configuration example placeholder
+  * Add README placeholder
+  * Add python-imaging dependency
+  * Change config loading logic to overwrite global settings with user settings.
+  * Add a way to disable running imagecat
+  * Add separate loader.sh for Debian packaging
+  * Use more variables instead of hard-coded paths
+  * Use the right PPA destination
+  * Remove git build dependency
+  * Add icon to autostart launcher
+  * Add --version and suppress header when --help
+  * Remove --dry-run
+  * Add --config to arg_parser to document it in --help
+  * Add man-page and README generator
+  * Add README
+  * Generate README manually, partially
+  * Set Debian package format
+  * Make sure we generate imagecat.manpages
+  * Add LICENSE file
+  * Bump version, update README, update changelog
 
- -- Nick Douma <n.douma@nekoconeko.nl>  Mon, 17 Feb 2014 11:44:44 +0100
+ -- Nick Douma <n.douma@nekoconeko.nl>  Mon, 17 Feb 2014 22:08:03 +0100
