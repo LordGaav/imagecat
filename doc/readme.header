@@ -1,0 +1,56 @@
+![imagecat :3](https://github.com/LordGaav/imagecat/blob/develop/icons/imagecat_72.png?raw=true "imagecat :3")
+imagecat
+--------
+
+An automatic wallpaper changer with multi-monitor support.
+
+Dependencies
+============
+
+* python >= 2.7
+* python-configobj
+* python-gi
+* python-gobject
+* python-imaging
+* x11-xserver-utils (or another package that provides `xrandr`)
+
+Building
+========
+
+No building is required to use imagecat. To build a Debian package, perform the following steps:
+
+1. `apt-get install ubuntu-dev-tools debhelper dh-exec`
+
+From here you can either build the package with pbuilder-dist:
+
+2. `pbuilder-dist saucy create`
+3. `make -f debian/Makefile source_no_sign`
+4. `make -f debian/Makefile pbuild CHANGES=../imagecat_xxxx_.dsc`
+5. look for the resulting .deb in ~/pbuilder/saucy_result
+
+Or directly using dpkg-buildpackage
+
+2. `make -f debian/Makefile package`
+
+
+Installing
+==========
+
+Either use the methods described above to build your own package, or install it from my PPA.
+
+1. `add-apt-repository ppa:lordgaav/imagecat`
+2. `apt-get update && apt-get install imagecat`
+
+Using
+=====
+
+The package will install a global config file in /etc/imagecat.config and will cause imagecat to get started at every login. imagecat will not run by default however, if you want imagecat to automatically change your wallpaper every two minutes, you have two options:
+
+* Change autorun to True in /etc/imagecat.config to enable imagecat for ALL users, or
+* Create ~/.imagecat.config, and set autorun to True.
+
+Optionally, change imagedir to your own directory of images. By default, imagecat will use /usr/share/background.
+
+Man page
+========
+

@@ -139,7 +139,6 @@ ${files.dir}/debian-default.config => etc/imagecat.config
 		<delete file="${debian.dir}/libs" />
 		<delete file="${debian.dir}/${executable}.install.tmp" />
 		<echo file="${debian.dir}/${executable}.links" append="false">${debian.bin.dir}/${executable}.py /usr/bin/${executable}</echo>
-		<echo file="${debian.dir}/${executable}.manpages" append="false">${docs.dir}/${executable}.1</echo>
 		<copy file="README" tofile="${debian.dir}/${executable}.README.Debian" />
 	</target>
 
@@ -153,9 +152,15 @@ ${files.dir}/debian-default.config => etc/imagecat.config
 	</target>
 
 	<target name="readme" depends="man-page" description="Regenerate README">
-		<exec executable="roff2text" output="README" append="false">
-			<arg value="${debian.dir}/${executable}.1"/>
+		<exec executable="bash" output="README.gen" append="false">
+			<arg value="-c"/>
+			<arg value="roff2text ${debian.dir}/${executable}.1 | col -b"/>
 		</exec>
+		<exec executable="bash" output="README" append="false">
+			<arg value="-c"/>
+			<arg value="cat ${docs.dir}/readme.header README.gen"/>
+		</exec>
+		<delete file="README.gen"/>
 	</target>
 
 	<target name="bump-version" depends="git-revision" description="Bump the BUILD_VERSION version number">
