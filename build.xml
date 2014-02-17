@@ -96,11 +96,11 @@
 			</fileset>
 		</copy>
 
-		<copy file="README.md" tofile="${dist.dir}/README.md" />
+		<copy file="README" tofile="${dist.dir}/README" />
 		<chmod file="${dist.dir}/${executable}.py" perm="a+x"/>
 	</target>
 
-	<target name="package-debian" depends="clean,dist" description="Prepare project for Debian packaging">
+	<target name="package-debian" depends="clean,dist,man-page,readme" description="Prepare project for Debian packaging">
 		<echo file="${debian.dir}/libs" append="false">${debian.pkg.py}</echo>
 		<exec executable="paste" output="${debian.dir}/${executable}.install.tmp" append="false">
 			<arg value="-d "/>
@@ -139,8 +139,23 @@ ${files.dir}/debian-default.config => etc/imagecat.config
 		<delete file="${debian.dir}/libs" />
 		<delete file="${debian.dir}/${executable}.install.tmp" />
 		<echo file="${debian.dir}/${executable}.links" append="false">${debian.bin.dir}/${executable}.py /usr/bin/${executable}</echo>
-		<!--<echo file="${debian.dir}/${executable}.manpages" append="false">${docs.dir}/${executable}.1</echo>-->
-		<copy file="README.md" tofile="${debian.dir}/${executable}.README.Debian" />
+		<echo file="${debian.dir}/${executable}.manpages" append="false">${docs.dir}/${executable}.1</echo>
+		<copy file="README" tofile="${debian.dir}/${executable}.README.Debian" />
+	</target>
+
+	<target name="man-page" depends="dist" description="Regenerate man page">
+		<exec executable="help2man" output="${debian.dir}/${executable}.1" append="false">
+			<arg value="-N"/>
+			<arg value="--no-discard-stderr"/>
+			<arg value="--include=${docs.dir}/manpage.roff"/>
+			<arg value="./${executable}.py"/>
+		</exec>
+	</target>
+
+	<target name="readme" depends="man-page" description="Regenerate README">
+		<exec executable="roff2text" output="README" append="false">
+			<arg value="${debian.dir}/${executable}.1"/>
+		</exec>
 	</target>
 
 	<target name="bump-version" depends="git-revision" description="Bump the BUILD_VERSION version number">
