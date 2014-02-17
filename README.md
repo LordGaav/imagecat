@@ -53,13 +53,13 @@ Optionally, change imagedir to your own directory of images. By default, imageca
 
 Man page
 ========
-
+```
 IMAGECAT(1)			 User Commands			   IMAGECAT(1)
 
 
 
 NAME
-       imagecat - manual page for imagecat version 0.1 (a5e5150)
+       imagecat - manual page for imagecat version 0.1 (43b5be8)
 
 DESCRIPTION
        usage: imagecat.py [-h] [--config CFG] [--imagedir DIR] [--tmpdir DIR]
@@ -131,4 +131,5 @@ KNOWN ISSUES
 
 
 
-imagecat version 0.1 (a5e5150)	 February 2014			   IMAGECAT(1)
+imagecat version 0.1 (43b5be8)	 February 2014			   IMAGECAT(1)
+```
