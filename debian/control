@@ -9,8 +9,8 @@ X-Python-Version: >= 2.7
 Package: imagecat
 Architecture: all
 Section: python
-Depends: ${misc:Depends}, ${python:Depends}, python-gi, 
- python-gobject, python-configobj, x11-xserver-utils
+Depends: ${misc:Depends}, ${python:Depends}, python-gi,
+ python-gobject, python-configobj, python-imaging, x11-xserver-utils
 Description: Automatic wallpaper changer with multi-monitor support.
  This tool can automatically detect your monitor layout, and create wallpapers accordingly.
  Wallpapers are randomly selected from a supplied folder of images. Every screen will get
