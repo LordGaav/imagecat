@@ -23,6 +23,8 @@
 
 	<property name="dist.dir" value="dist"/>
 	<property name="libs.dir" value="imagecat"/>
+	<property name="files.dir" value="files"/>
+	<property name="icons.dir" value="icons"/>
 	<property name="docs.dir" value="doc"/>
 	<property name="executable" value="imagecat"/>
 	<property name="debian.dir" value="debian"/>
@@ -108,7 +110,7 @@
 		<!-- Main executable -->
 		<echo file="${debian.dir}/${executable}.install" append="false">#!/usr/bin/dh-exec
 ${executable}.py ${debian.bin.dir}
-loader.sh ${debian.bin.dir}
+${files.dir}/debian-loader.sh => ${debian.bin.dir}/loader.sh
 </echo>
 		<exec executable="sed" output="debian/${executable}.install" append="true">
 			<arg value="-r"/>
@@ -118,21 +120,25 @@ loader.sh ${debian.bin.dir}
 		<!-- Library files -->
 		<!-- Icons -->
 		<echo file="${debian.dir}/${executable}.install" append="true">
-icons/${executable}_114.png => usr/share/icons/hicolor/128x128/apps/${executable}.png
-icons/${executable}_72.png => usr/share/icons/hicolor/72x72/apps/${executable}.png
-icons/${executable}_57.png => usr/share/icons/hicolor/64x64/apps/${executable}.png
-icons/${executable}_57.png => usr/share/icons/hicolor/48x48/apps/${executable}.png
+${icons.dir}/${executable}_114.png => usr/share/icons/hicolor/128x128/apps/${executable}.png
+${icons.dir}/${executable}_72.png => usr/share/icons/hicolor/72x72/apps/${executable}.png
+${icons.dir}/${executable}_57.png => usr/share/icons/hicolor/64x64/apps/${executable}.png
+${icons.dir}/${executable}_57.png => usr/share/icons/hicolor/48x48/apps/${executable}.png
 </echo>
 
 		<!-- Autostart file -->
 		<echo file="${debian.dir}/${executable}.install" append="true">
-files/gnome-autostart.desktop => etc/xdg/autostart/imagecat.desktop
+${files.dir}/gnome-autostart.desktop => etc/xdg/autostart/imagecat.desktop
+</echo>
+		<!-- Default global config -->
+		<echo file="${debian.dir}/${executable}.install" append="true">
+${files.dir}/debian-default.config => etc/imagecat.config
 </echo>
 		<chmod file="${debian.dir}/${executable}.install" perm="a+x"/>
 
 		<delete file="${debian.dir}/libs" />
 		<delete file="${debian.dir}/${executable}.install.tmp" />
-		<echo file="${debian.dir}/${executable}.links" append="false">usr/share/${executable}/imagecat.py /usr/bin/${executable}</echo>
+		<echo file="${debian.dir}/${executable}.links" append="false">${debian.bin.dir}/${executable}.py /usr/bin/${executable}</echo>
 		<!--<echo file="${debian.dir}/${executable}.manpages" append="false">${docs.dir}/${executable}.1</echo>-->
 		<copy file="README.md" tofile="${debian.dir}/${executable}.README.Debian" />
 	</target>
