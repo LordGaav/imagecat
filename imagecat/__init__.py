@@ -18,8 +18,8 @@
 #
 
 NAME = "imagecat"
-VERSION = "0.1"
-BUILD = "43b5be8"
+VERSION = "0.1.1"
+BUILD = "c62d195"
 
 import logging, logging.handlers, os, pwd, grp, sys, inspect
 from configobj import ConfigObj
