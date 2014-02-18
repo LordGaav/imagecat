@@ -12,6 +12,7 @@
 /*.tar.bz2
 
 ## Debian build files
+/debian/control
 /debian/imagecat.*
 /debian/files
 /debian/tmp
