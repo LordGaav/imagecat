@@ -29,11 +29,11 @@ SOLIDFILL = 0
 GRADIENTVERT = 1
 GRADIENTHORIZ = 2
 
-class GConfWrapper(object):
+class GSettingsWrapper(object):
 	""" Convenience wrapper around Gio.Settings. """
 
 	def _init_settings(self, profile=None):
-		""" Refreshes the internal GConf settings handle.  """
+		""" Refreshes the internal GSettings settings handle.  """
 		if profile == None:
 			profile = self.default_profile
 		base_key = self.base_key % (profile)
@@ -54,20 +54,32 @@ class GConfWrapper(object):
 			filtered = filter(lambda x: isinstance(x, tp), lst)
 		return len(lst) == len(filtered)
 
+	def _get_string_array(self, key):
+		"""Retrieve a list of string from a key in GSettings."""
+		return self.settings.get_strv(key)
+
+	def _get_int_array(self, key):
+		"""Retrieve a list of integers from a key in GSettings."""
+		return self.settings.get_value(key)
+
+	def _get_int(self, key):
+		"""Retrieve a single integer from a key in GSettings."""
+		return self.settings.get_int(key)
+
 	def _set_hexstring_array(self, key, lst):
-		""" Set a list of hexadecimal strings to a key in GConf. The input is validated.  """
+		""" Set a list of hexadecimal strings to a key in GSettings. The input is validated.  """
 		if not self._check_list_type(lst, "hex"):
 			raise TypeError("List of %s contains non-hexadecimal strings" % key)
 		return self.settings.set_value(key, GLib.Variant("as", lst))
 
 	def _set_string_array(self, key, lst):
-		""" Set a list of strings to a key in GConf. The input is validated. """
+		""" Set a list of strings to a key in GSettings. The input is validated. """
 		if not self._check_list_type(lst, basestring):
 			raise TypeError("List of %s contains non-strings" % key)
 		return self.settings.set_value(key, GLib.Variant("as", lst))
 
 	def _set_int_array(self, key, lst):
-		""" Set a list of integers to a key in GConf. The input is validated. """
+		""" Set a list of integers to a key in GSettings. The input is validated. """
 		if not self._check_list_type(lst, int):
 			raise TypeError("List of %s contains non-hexadecimal strings" % key)
 		return self.settings.set_value(key, GLib.Variant("ai", lst))
@@ -84,15 +96,15 @@ class GConfWrapper(object):
 		""" Apply active changes. Only valid after delay(). """
 		return self.settings.apply()
 
-class CorePluginSettings(GConfWrapper):
+class CorePluginSettings(GSettingsWrapper):
 	"""
 	Retrieves settings for the Compiz Core plugin.
 	"""
 
 	default_profile = "unity"
-	""" Default GConf profile to use. Ubuntu uses "unity" by default.  """
+	""" Default GSettings profile to use. Ubuntu uses "unity" by default.  """
 	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
-	""" Base key where the Core plugin keeps its settings in GConf. """
+	""" Base key where the Core plugin keeps its settings in GSettings. """
 	schema_key = "org.compiz.core"
 	""" Schema definition for Core plugin's settings. """
 
@@ -101,67 +113,73 @@ class CorePluginSettings(GConfWrapper):
 
 	def get_hsize(self):
 		""" Retrieve the amount of workspaces (horizontally). """
-		return self.settings.get_int("hsize")
+		return self._get_int("hsize")
 
 	def get_vsize(self):
 		""" Retrieve the amount of workspaces (vertically). """
-		return self.settings.get_int("vsize")
+		return self._get_int("vsize")
 
-
-class WallpaperPluginSettings(GConfWrapper):
+class WallpaperPluginSettingsGSettings(GSettingsWrapper):
 	"""
 	Sets and retrieves settings for the Compiz Wallpaper plugin.
 	"""
 
 	default_profile = "unity"
-	""" Default GConf profile to use. Ubuntu uses "unity" by default.  """
+	""" Default GSettings profile to use. Ubuntu uses "unity" by default.  """
 	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
-	""" Base key where the Wallpaper plugin keeps its settings in GConf. """
+	""" Base key where the Wallpaper plugin keeps its settings in GSettings. """
 	schema_key = "org.compiz.wallpaper"
 	""" Schema definition for Wallpaper plugin's settings. """
+
+	BGIMAGE_KEY = "bg-image"
+	BGCOLOR1_KEY = "bg-color1"
+	BGCOLOR2_KEY = "bg-color2"
+	BGFILLTYPE_KEY = "bg-fill-type"
+	BGIMAGEPOS_KEY = "bg-image-pos"
 
 	def __init__(self, profile=None):
 		self._init_settings(profile)
 	
 	def get_bg_image(self):
-		""" Retrieve the currently set background images from GConf. """
-		return self.settings.get_strv("bg-image")
+		""" Retrieve the currently set background images from GSettings. """
+		return self._get_string_array(self.BGIMAGE_KEY)
 
 	def get_bg_color1(self):
-		""" Retrieve the currently set background start colors from GConf. """
-		return self.settings.get_strv("bg-color1")
+		""" Retrieve the currently set background start colors from GSettings. """
+		return self._get_string_array(self.BGCOLOR1_KEY)
 
 	def get_bg_color2(self):
-		""" Retrieve the currently set background end colors from GConf.  """
-		return self.settings.get_strv("bg-color2")
+		""" Retrieve the currently set background end colors from GSettings.  """
+		return self._get_string_array(self.BGCOLOR2_KEY)
 
 	def get_bg_fill_type(self):
-		""" Retrieve the currently set background fill types from GConf. """
-		return self.settings.get_value("bg-fill-type")
+		""" Retrieve the currently set background fill types from GSettings. """
+		return self._get_int_array(self.BGFILLTYPE_KEY)
 
 	def get_bg_image_pos(self):
-		""" Retrieve the currently set background image positions from GConf. """
-		return self.settings.get_value("bg-image-pos")
+		""" Retrieve the currently set background image positions from GSettings. """
+		return self._get_int_array(self.BGIMAGEPOS_KEY)
 
 	def set_bg_image(self, filenames):
 		""" Set background images to given filenames. Must be provided as a list of strings. """
-		return self._set_string_array("bg-image", filenames)
+		return self._set_string_array(self.BGIMAGE_KEY, filenames)
 
 	def set_bg_color1(self, colors):
 		""" Set background start colors. Must be provided as a list of hexadecimal strings. """
-		return self._set_hexstring_array("bg-color1", colors)
+		return self._set_hexstring_array(self.BGCOLOR1_KEY, colors)
 
 	def set_bg_color2(self, colors):
 		""" Set background end colors. Must be provided as a list of hexadecimal strings. """
-		return self._set_hexstring_array("bg-color2", colors)
+		return self._set_hexstring_array(self.BGCOLOR2_KEY, colors)
 
 	def set_bg_fill_type(self, types):
 		""" Set background fill types. Must be provided as a list of integers. """
-		return self._set_int_array("bg-fill-type", types)
+		return self._set_int_array(self.BGFILLTYPE_KEY, types)
 
 	def set_bg_image_pos(self, pos):
 		""" Set background image positions. Must be provided as a list of integers. """
-		return self._set_int_array("bg-image-pos", pos)
+		return self._set_int_array(self.BGIMAGEPOS_KEY, pos)
+
 
 if __name__ == "__main__":
 	c = CorePluginSettings()
