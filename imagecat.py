@@ -78,7 +78,6 @@ if args.imagedir == None:
 from imagecat.globber import Globber
 from imagecat.image import *
 from imagecat.randomizer import Randomizer
-from imagecat.settings import *
 from imagecat.xrandr import XRandr
 import Image
 
@@ -137,10 +136,11 @@ for wallpaper in wallpapers:
 
 if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:
 	logger.debug("Ubuntu 12.04 detected, using GConf backend.")
-	settings = WallpaperPluginSettingsGConf()
+	from imagecat.settings_gconf import *
 else:
 	logger.debug("Using GSettings backend.")
-	settings = WallpaperPluginSettingsGSettings()
+	from imagecat.settings_gsettings import *
+settings = WallpaperPluginSettings()
 
 logger.info("Setting new wallpapers in {0}".format(type(settings)))
 bg_colors = ["000000"] * len(bg_images)
