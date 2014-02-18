@@ -17,7 +17,7 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, os
+import sys, os, platform
 
 if sys.version_info < (2, 7):
 	print "Sorry, {0} requires Python 2.7.".format(rsscat.NAME)
@@ -78,7 +78,7 @@ if args.imagedir == None:
 from imagecat.globber import Globber
 from imagecat.image import *
 from imagecat.randomizer import Randomizer
-from imagecat.gconf import *
+from imagecat.settings import *
 from imagecat.xrandr import XRandr
 import Image
 
@@ -135,23 +135,29 @@ for wallpaper in wallpapers:
 	j += 1
 	bg_images.append(filename)
 
-logger.info("Setting new wallpapers in GConf")
+if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:
+	logger.debug("Ubuntu 12.04 detected, using GConf backend.")
+	settings = WallpaperPluginSettingsGConf()
+else:
+	logger.debug("Using GSettings backend.")
+	settings = WallpaperPluginSettingsGSettings()
+
+logger.info("Setting new wallpapers in {0}".format(type(settings)))
 bg_colors = ["000000"] * len(bg_images)
 bg_fill_types = [SOLIDFILL] * len(bg_images)
 bg_image_pos = [CENTERED] * len(bg_images)
 
-gconf = WallpaperPluginSettings()
-gconf.delay()
+settings.delay()
 logger.debug("Setting bg_image to {0}".format(bg_images))
-gconf.set_bg_image(bg_images)
+settings.set_bg_image(bg_images)
 logger.debug("Setting bg_color1 to {0}".format(bg_colors))
-gconf.set_bg_color1(bg_colors)
+settings.set_bg_color1(bg_colors)
 logger.debug("Setting bg_color2 to {0}".format(bg_colors))
-gconf.set_bg_color2(bg_colors)
+settings.set_bg_color2(bg_colors)
 logger.debug("Setting bg_fill_type to {0}".format(bg_fill_types))
-gconf.set_bg_fill_type(bg_fill_types)
+settings.set_bg_fill_type(bg_fill_types)
 logger.debug("Setting bg_image_pos to {0}".format(bg_image_pos))
-gconf.set_bg_image_pos(bg_image_pos)
-gconf.apply()
+settings.set_bg_image_pos(bg_image_pos)
+settings.apply()
 
 logger.info("All done!")
