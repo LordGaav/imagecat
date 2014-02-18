@@ -18,6 +18,7 @@
 #
 
 from gi.repository import Gio, GLib
+import gconf
 
 SCALECROP = 0
 SCALE = 1
@@ -47,7 +48,7 @@ class GSettingsWrapper(object):
 		"""
 		if tp == "hex":
 			try:
-				filtered = map(lambda x: int(x, 16), lst)
+				filtered = map(lambda x: int(x.replace("#", ""), 16), lst)
 			except:
 				return False
 		else:
@@ -180,6 +181,68 @@ class WallpaperPluginSettingsGSettings(GSettingsWrapper):
 		""" Set background image positions. Must be provided as a list of integers. """
 		return self._set_int_array(self.BGIMAGEPOS_KEY, pos)
 
+class WallpaperPluginSettingsGConf(WallpaperPluginSettingsGSettings):
+	"""
+	Sets and retrieves settings for the Compiz Wallpaper plugin (for Ubuntu 12.04).
+	"""
+
+	base_key = "/apps/compiz-1/plugins/wallpaper/screen0/options/"
+	""" Base key where the Wallpaper plugin keeps its settings in GConf. """
+	schema_key = "org.freedesktop.compiz.wallpaper"
+	""" Schema definition for Wallpaper plugin's settings. """
+
+	BGIMAGE_KEY = "bg_image"
+	BGCOLOR1_KEY = "bg_color1"
+	BGCOLOR2_KEY = "bg_color2"
+	BGFILLTYPE_KEY = "bg_fill_type"
+	BGIMAGEPOS_KEY = "bg_image_pos"
+
+	def _init_settings(self, profile=None):
+		""" Refreshes the internal GConf settings handle.  """
+		base_key = self.base_key
+		self.settings = gconf.client_get_default()
+
+	def _get_string_array(self, key):
+		"""Retrieve a list of string from a key in GConf."""
+		return self.settings.get_list(self.base_key + key, gconf.VALUE_STRING)
+
+	def _get_int_array(self, key):
+		"""Retrieve a list of integers from a key in GConf."""
+		return self.settings.get_list(self.base_key + key, gconf.VALUE_INT)
+
+	def _get_int(self, key):
+		"""Retrieve a single integer from a key in GConf."""
+		return self.settings.get_int(self.base_key + key)
+
+	def _set_hexstring_array(self, key, lst):
+		""" Set a list of hexadecimal strings to a key in GConf. The input is validated.  """
+		if not self._check_list_type(lst, "hex"):
+			raise TypeError("List of %s contains non-hexadecimal strings" % key)
+		return self.settings.set_list(self.base_key + key, gconf.VALUE_STRING, lst)
+
+	def _set_string_array(self, key, lst):
+		""" Set a list of strings to a key in GConf. The input is validated. """
+		if not self._check_list_type(lst, basestring):
+			raise TypeError("List of %s contains non-strings" % key)
+		return self.settings.set_list(self.base_key + key, gconf.VALUE_STRING, lst)
+
+	def _set_int_array(self, key, lst):
+		""" Set a list of integers to a key in GConf. The input is validated. """
+		if not self._check_list_type(lst, int):
+			raise TypeError("List of %s contains non-hexadecimal strings" % key)
+		return self.settings.set_list(self.base_key + key, gconf.VALUE_INT, lst)
+
+	def delay(self):
+		""" Delay mode does not exist on GConf, do a no-op."""
+		return True
+
+	def revert(self):
+		""" Revert active changes. Does not work on GConf, do a no-op. """
+		return True
+
+	def apply(self):
+		""" Apply active changes. Suggest as sync to GConf. """
+		return self.settings.suggest_sync()
 
 if __name__ == "__main__":
 	c = CorePluginSettings()
