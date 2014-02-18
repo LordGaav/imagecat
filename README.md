@@ -59,7 +59,7 @@ IMAGECAT(1)			 User Commands			   IMAGECAT(1)
 
 
 NAME
-       imagecat - manual page for imagecat version 0.1 (43b5be8)
+       imagecat - manual page for imagecat version 0.1.2 (3e3f448)
 
 DESCRIPTION
        usage: imagecat.py [-h] [--config CFG] [--imagedir DIR] [--tmpdir DIR]
@@ -131,5 +131,5 @@ KNOWN ISSUES
 
 
 
-imagecat version 0.1 (43b5be8)	 February 2014			   IMAGECAT(1)
+imagecat version 0.1.2 (3e3f448) February 2014			   IMAGECAT(1)
 ```
