@@ -1,3 +1,17 @@
+imagecat (0.2) RELEASE; urgency=low
+
+  * Refactor GSettingsWrapper into SettingsWrapper
+  * Reimplement GConf stuff as subclass of SettingsWrapper
+  * Reimplement GSettings stuff as subclass of SettingsWrapper
+  * Use selective imports based on rebased Settings classes
+  * Split source and binary control parts
+  * Change distribution placeholder to RELEASE
+  * Make dpkg-source ignore intermediate files, Git files and scripts
+  * Add multi release fudger convenience script
+  * Bump version, update README, update changelog
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Mon, 24 Feb 2014 09:28:57 +0100
+
 imagecat (0.1.2) RELEASE; urgency=low
 
   * Redirect retrieval to internal function, and rename GConf to GSettings.
