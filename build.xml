@@ -134,7 +134,23 @@ ${files.dir}/gnome-autostart.desktop => etc/xdg/autostart/imagecat.desktop
 		<echo file="${debian.dir}/${executable}.install" append="true">
 ${files.dir}/debian-default.config => etc/imagecat.config
 </echo>
-		<chmod file="${debian.dir}/${executable}.install" perm="a+x"/>
+<chmod file="${debian.dir}/${executable}.install" perm="a+x"/>
+
+		<echo file="${debian.dir}/${executable}.postinst" append="false">#!/bin/sh
+set -e
+. /usr/share/debconf/confmodule
+case "$1" in
+	configure)
+		chmod +x /usr/share/${executable}/loader.sh || exit 1
+	;;
+esac
+
+#DEBHELPER#
+
+db_stop
+
+exit 0
+</echo>
 
 		<delete file="${debian.dir}/libs" />
 		<delete file="${debian.dir}/${executable}.install.tmp" />
