@@ -110,7 +110,7 @@
 		<!-- Main executable -->
 		<echo file="${debian.dir}/${executable}.install" append="false">#!/usr/bin/dh-exec
 ${executable}.py ${debian.bin.dir}
-${files.dir}/debian-loader.sh => ${debian.bin.dir}/loader.sh
+${files.dir}/${executable}-reload.sh => ${debian.bin.dir}/imagecat-reload.sh
 </echo>
 		<exec executable="sed" output="debian/${executable}.install" append="true">
 			<arg value="-r"/>
@@ -141,7 +141,7 @@ set -e
 . /usr/share/debconf/confmodule
 case "$1" in
 	configure)
-		chmod +x /usr/share/${executable}/loader.sh || exit 1
+		chmod +x /usr/share/${executable}/${executable}-reload.sh || exit 1
 	;;
 esac
 
@@ -154,7 +154,10 @@ exit 0
 
 		<delete file="${debian.dir}/libs" />
 		<delete file="${debian.dir}/${executable}.install.tmp" />
-		<echo file="${debian.dir}/${executable}.links" append="false">${debian.bin.dir}/${executable}.py /usr/bin/${executable}</echo>
+		<echo file="${debian.dir}/${executable}.links" append="false">
+${debian.bin.dir}/${executable}.py /usr/bin/${executable}
+${debian.bin.dir}/${executable}-reload.sh /usr/bin/${executable}-reload
+</echo>
 		<echo file="${debian.dir}/${executable}.manpages" append="false">${debian.dir}/${executable}.1</echo>
 		<copy file="README.md" tofile="${debian.dir}/${executable}.README.Debian" />
 	</target>
