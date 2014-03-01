@@ -25,8 +25,7 @@ if sys.version_info < (2, 7):
 
 import imagecat
 from imagecat.rotate import rotate_wallpapers
-import tempfile
-from argparse import ArgumentParser, SUPPRESS
+from argparse import ArgumentParser
 
 config_parser = ArgumentParser(description="Looking for config", add_help=False)
 config_parser.add_argument('--config', type=str)
@@ -55,36 +54,9 @@ if config_arg.version:
 if not config_arg.help:
 	logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
 
-config = imagecat.getConfig(config_arg)
+imagecat.STARTARG = config_arg
 
-arg_parser = ArgumentParser(description="{0} is an automatic wallpaper changer".format(imagecat.NAME))
-arg_parser.add_argument("--automatic", action="store_true",     default=False, 											help=SUPPRESS)
-arg_parser.add_argument("--config",    metavar="CFG", type=str, 														help="Config file to load")
-arg_parser.add_argument("--imagedir",  metavar="DIR", type=str, default=config.get("imagedir", None), 					help="Where to look for wallpapers")
-arg_parser.add_argument("--tmpdir",    metavar="DIR", type=str, default=config.get("tmpdir", tempfile.gettempdir()),	help="Where to store intermediate files")
-arg_parser.add_argument("--desktops",  metavar="D",   type=int, default=config.get("desktops", 1),						help="Amount of desktops (not physical monitors)")
-arg_parser.add_argument("--interval",  metavar="I",   type=int, default=config.get("interval", 60),						help="Time between wallpaper rotations, in seconds)")
-arg_parser.add_argument("--once",      action="store_true",     default=config.get("once", False),						help="Only run once, instead of scheduled")
-arg_parser.add_argument("--quiet",     action="store_true",     default=config.get("quiet", False),						help="Don't print messages to stdout")
-arg_parser.add_argument("--verbose",   action="store_true",     default=config.get("verbose", False),					help="Output debug messages")
-arg_parser.add_argument("--version",   action="store_true",     default=False,											help="Display version information and exit")
-args = arg_parser.parse_args()
-
-if args.automatic and config.get("autostart", 'False') == 'False':
-	logger.info("Started automatically, but autostart is not enabled, exiting...")
-	sys.exit(0)
-
-if args.imagedir == None:
-	logger.error("No imagedir specified, exiting...")
-	sys.exit(1)
-
-imagecat.IMAGEDIR = args.imagedir
-imagecat.TMPDIR = args.tmpdir
-imagecat.DESKTOPS = args.desktops
-imagecat.INTERVAL = args.interval
-imagecat.ONCE = args.once
-imagecat.QUIET = args.quiet
-imagecat.VERBOSE = args.verbose
+imagecat.reloadConfig()
 
 def main():
 	if imagecat.ONCE:
@@ -96,6 +68,7 @@ def main():
 
 		signal.signal(signal.SIGINT, imagecat.signal_handler)
 		signal.signal(signal.SIGTERM, imagecat.signal_handler)
+		signal.signal(signal.SIGUSR1, imagecat.config_handler)
 
 		imagecat.initialize()
 		imagecat.startAll()

@@ -58,6 +58,7 @@ class Scheduler(threading.Thread):
 			self.init_action(*self.init_args, **self.init_kwargs)
 
 		while not self.stop:
+			self.logger.debug("Delay is {0}".format(self.delay))
 			if (datetime.datetime.now() - self.lastRun).total_seconds() > self.delay:
 				self.logger.debug("Thread {0} is running".format(self.name))
 				try:

@@ -21,6 +21,8 @@ NAME = "imagecat"
 VERSION = "0.2"
 BUILD = "99de049"
 
+STARTARG = None
+
 THREADS = None
 
 IMAGEDIR = None
@@ -31,8 +33,9 @@ ONCE = False
 QUIET = False
 VERBOSE = False
 
-import logging, logging.handlers, os, pwd, grp, sys, inspect
+import logging, logging.handlers, os, pwd, grp, sys, inspect, tempfile
 from configobj import ConfigObj
+from argparse import ArgumentParser, SUPPRESS
 from imagecat.threads import Threads
 from imagecat.scheduler import Scheduler
 from imagecat.rotate import rotate_wallpapers
@@ -105,6 +108,48 @@ def getConfig(config_arg, debug_log=False, console=True):
 
 	return config
 
+def parseCliArgs(config):
+	arg_parser = ArgumentParser(description="{0} is an automatic wallpaper changer".format(NAME))
+	arg_parser.add_argument("--automatic", action="store_true",     default=False,                                       help=SUPPRESS)
+	arg_parser.add_argument("--config",    metavar="CFG", type=str,                                                      help="Config file to load")
+	arg_parser.add_argument("--imagedir",  metavar="DIR", type=str, default=config.get("imagedir", None),                help="Where to look for wallpapers")
+	arg_parser.add_argument("--tmpdir",    metavar="DIR", type=str, default=config.get("tmpdir", tempfile.gettempdir()), help="Where to store intermediate files")
+	arg_parser.add_argument("--desktops",  metavar="D",   type=int, default=config.get("desktops", 1),                   help="Amount of desktops (not physical monitors)")
+	arg_parser.add_argument("--interval",  metavar="I",   type=int, default=config.get("interval", 60),                  help="Time between wallpaper rotations, in seconds)")
+	arg_parser.add_argument("--once",      action="store_true",     default=config.get("once", False),                   help="Only run once, instead of scheduled")
+	arg_parser.add_argument("--quiet",     action="store_true",     default=config.get("quiet", False),                  help="Don't print messages to stdout")
+	arg_parser.add_argument("--verbose",   action="store_true",     default=config.get("verbose", False),                help="Output debug messages")
+	arg_parser.add_argument("--version",   action="store_true",     default=False,                                       help="Display version information and exit")
+	args = arg_parser.parse_args()
+
+	if args.automatic and config.get("autostart", 'False') == 'False':
+		logger.info("Started automatically, but autostart is not enabled, exiting...")
+		sys.exit(0)
+
+	if args.imagedir == None:
+		logger.error("No imagedir specified, exiting...")
+		sys.exit(1)
+
+	return args
+
+def reloadConfig():
+	global STARTARG, THREADS
+	global IMAGEDIR, TMPDIR, DESKTOPS, INTERVAL, ONCE, QUIET, VERBOSE
+
+	config = getConfig(STARTARG)
+	args = parseCliArgs(config)
+
+	IMAGEDIR = args.imagedir
+	TMPDIR = args.tmpdir
+	DESKTOPS = args.desktops
+	INTERVAL = args.interval
+	ONCE = args.once
+	QUIET = args.quiet
+	VERBOSE = args.verbose
+
+	if isinstance(THREADS, Threads) and "rotate" in THREADS.getThreads():
+		THREADS.getThread("rotate").delay = INTERVAL
+
 def initialize():
 	global THREADS, INTERVAL
 
@@ -150,6 +195,12 @@ def signal_handler(signum=None, frame=None):
 	if type(signum) != type(None):
 		getLogger(__name__).info("Caught signal {0}".format(signum))
 		stopAll()
+
+def config_handler(signum=None, frame=None):
+	if type(signum) != type(None):
+		getLogger(__name__).info("Caught signal {0}, reloading config".format(signum))
+		reloadConfig()
+		getLogger(__name__).info("Config reloaded")
 
 def hello(text):
 	getLogger(__name__).info(text)
