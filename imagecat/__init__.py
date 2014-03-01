@@ -26,6 +26,7 @@ THREADS = None
 IMAGEDIR = None
 TMPDIR = None
 DESKTOPS = None
+INTERVAL = None
 QUIET = False
 VERBOSE = False
 
@@ -104,14 +105,14 @@ def getConfig(config_arg, debug_log=False, console=True):
 	return config
 
 def initialize():
-	global THREADS
+	global THREADS, INTERVAL
 
 	getLogger(__name__).info("Initializing...")
 
 	if THREADS is None:
 		THREADS = Threads()
 
-	rotateThread = Scheduler(60, rotate_wallpapers, "rotateThread", True)
+	rotateThread = Scheduler(INTERVAL, rotate_wallpapers, "rotateThread", True)
 
 	THREADS.registerThread("rotate", rotateThread)
 
