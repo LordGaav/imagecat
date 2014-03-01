@@ -99,7 +99,7 @@ def set_wallpapers(wallpapers):
 	for wallpaper in wallpapers:
 		filename = os.path.join(imagecat.TMPDIR, "wallpaper-{0}-{1}-{2}.png".format(j, os.getpid(), int(time.time())))
 		logger.info("Saving wallpaper {0} to {1}".format(j, filename))
-		wallpaper.save(filename)
+		wallpaper.save(filename, compress_level=0)
 		j += 1
 		bg_images.append(filename)
 	
