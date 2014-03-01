@@ -17,11 +17,13 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, signal, time
+import sys, signal, time, setproctitle
 
 if sys.version_info < (2, 7):
 	print "Sorry, {0} requires Python 2.7.".format(rsscat.NAME)
 	sys.exit(1)
+
+setproctitle.setproctitle("imagecat")
 
 import imagecat
 from imagecat.rotate import rotate_wallpapers
