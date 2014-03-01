@@ -74,6 +74,12 @@ class XRandr(object):
 
 		return self.displays
 
+	def get_connected_displays(self):
+		"""
+		Filter the found displays, and only return displays which are connected."
+		"""
+		return filter(lambda x: x['state'] == "connected", self.displays)
+
 if __name__ == "__main__":
 	from pprint import PrettyPrinter
 	r = XRandr()

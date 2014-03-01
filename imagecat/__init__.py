@@ -21,8 +21,21 @@ NAME = "imagecat"
 VERSION = "0.2"
 BUILD = "99de049"
 
+THREADS = None
+
+IMAGEDIR = None
+TMPDIR = None
+DESKTOPS = None
+INTERVAL = None
+ONCE = False
+QUIET = False
+VERBOSE = False
+
 import logging, logging.handlers, os, pwd, grp, sys, inspect
 from configobj import ConfigObj
+from imagecat.threads import Threads
+from imagecat.scheduler import Scheduler
+from imagecat.rotate import rotate_wallpapers
 
 def getLogger(name, level=logging.INFO, handlers=[]):
 	logger = logging.getLogger(name)
@@ -91,6 +104,52 @@ def getConfig(config_arg, debug_log=False, console=True):
 		config.merge(cfg)
 
 	return config
+
+def initialize():
+	global THREADS, INTERVAL
+
+	getLogger(__name__).info("Initializing...")
+
+	if THREADS is None:
+		THREADS = Threads()
+
+	rotateThread = Scheduler(INTERVAL, rotate_wallpapers, "rotateThread", True)
+
+	THREADS.registerThread("rotate", rotateThread)
+
+def startAll():
+	global THREADS
+
+	getLogger(__name__).info("Starting {0} threads...".format(NAME))
+
+	for thread in THREADS.getThreads():
+		t = THREADS.getThread(thread)
+		getLogger(__name__).debug("Starting {0}".format(t.name))
+		t.start()
+
+	getLogger(__name__).info("Started all threads")
+
+def stopAll():
+	global THREADS
+
+	getLogger(__name__).info("Stopping {0} threads...".format(NAME))
+
+	for thread in THREADS.getThreads():
+		t = THREADS.getThread(thread)
+		getLogger(__name__).info("Stopping {0}".format(t.name))
+		t.stop = True
+		t.join()
+		THREADS.unregisterThread(thread)
+
+	getLogger(__name__).info("Stopped all threads")
+	getLogger(__name__).fatal("Comitting suicide")
+
+	os._exit(0)
+
+def signal_handler(signum=None, frame=None):
+	if type(signum) != type(None):
+		getLogger(__name__).info("Caught signal {0}".format(signum))
+		stopAll()
 
 def hello(text):
 	getLogger(__name__).info(text)
