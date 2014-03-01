@@ -17,7 +17,7 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os,platform
+import os,time, platform
 import Image
 
 import imagecat
@@ -97,7 +97,7 @@ def set_wallpapers(wallpapers):
 	j = 0
 	bg_images = []
 	for wallpaper in wallpapers:
-		filename = os.path.join(imagecat.TMPDIR, "wallpaper-{0}-{1}.png".format(j, os.getpid()))
+		filename = os.path.join(imagecat.TMPDIR, "wallpaper-{0}-{1}-{2}.png".format(j, os.getpid(), int(time.time())))
 		logger.info("Saving wallpaper {0} to {1}".format(j, filename))
 		wallpaper.save(filename)
 		j += 1
