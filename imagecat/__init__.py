@@ -27,6 +27,7 @@ IMAGEDIR = None
 TMPDIR = None
 DESKTOPS = None
 INTERVAL = None
+ONCE = False
 QUIET = False
 VERBOSE = False
 
