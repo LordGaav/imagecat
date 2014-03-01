@@ -21,6 +21,12 @@ NAME = "imagecat"
 VERSION = "0.2"
 BUILD = "99de049"
 
+IMAGEDIR = None
+TMPDIR = None
+DESKTOPS = None
+QUIET = False
+VERBOSE = False
+
 import logging, logging.handlers, os, pwd, grp, sys, inspect
 from configobj import ConfigObj
 

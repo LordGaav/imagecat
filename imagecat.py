@@ -17,13 +17,14 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, os, platform
+import sys
 
 if sys.version_info < (2, 7):
 	print "Sorry, {0} requires Python 2.7.".format(rsscat.NAME)
 	sys.exit(1)
 
 import imagecat
+from imagecat.rotate import rotate_wallpapers
 import tempfile
 from argparse import ArgumentParser, SUPPRESS
 
@@ -75,89 +76,10 @@ if args.imagedir == None:
 	logger.error("No imagedir specified, exiting...")
 	sys.exit(1)
 
-from imagecat.globber import Globber
-from imagecat.image import *
-from imagecat.randomizer import Randomizer
-from imagecat.xrandr import XRandr
-import Image
+imagecat.IMAGEDIR = args.imagedir
+imagecat.TMPDIR = args.tmpdir
+imagecat.DESKTOPS = args.desktops
+imagecat.QUIET = args.quiet
+imagecat.VERBOSE = args.verbose
 
-images = Globber(path=args.imagedir, filter=['*.jpg', '*.jpeg', '*.gif', '*.png'], recursive=True).glob()
-
-logger.info("Found {0} images".format(len(images)))
-
-displays = XRandr().displays
-active_displays = filter(lambda x: x['state'] == "connected", displays)
-
-logger.info("Found {0} active displays ({1} total displays)".format(len(active_displays), len(displays)))
-logger.info("Found {0} desktops".format(args.desktops))
-
-random = Randomizer(images)
-
-logger.debug("Randomizer checksum: {0}".format(random.checksum))
-
-# TODO: invalidate blacklist when checksum changes
-
-selection = random.get_random(len(active_displays) * args.desktops)
-
-logger.info("Selected {0} random images".format(len(selection)))
-
-i = 0
-wallpapers = []
-offsets = map(lambda x: x['offset'], active_displays)
-while i < args.desktops:
-	logger.info("Generating wallpaper for desktop {0}".format(i))
-	tmp_images = []
-	for m in active_displays:
-		f = selection.pop()
-		im = Image.open(f)
-		targetsize = (m['resolution'][0], m['resolution'][1])
-		logger.debug("Cropresizing {0} from {1} to {2}".format(f, im.size, targetsize))
-		tmp_images.append(cropresize(im, targetsize))
-
-	logger.debug("Montaging images to wallpaper")
-	wallpapers.append(montage(tmp_images, offsets))
-	i += 1
-
-logger.info("Remove old wallpaper files")
-old_wallpapers = Globber(path=args.tmpdir, filter=['wallpaper-*.*'], recursive=False).glob()
-
-for old in old_wallpapers:
-	logger.debug("Unlinking {0}".format(old))
-	os.unlink(old)
-
-j = 0
-bg_images = []
-for wallpaper in wallpapers:
-	filename = os.path.join(args.tmpdir, "wallpaper-{0}-{1}.png".format(j, os.getpid()))
-	logger.info("Saving wallpaper {0} to {1}".format(j, filename))
-	wallpaper.save(filename)
-	j += 1
-	bg_images.append(filename)
-
-if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:
-	logger.debug("Ubuntu 12.04 detected, using GConf backend.")
-	from imagecat.settings_gconf import *
-else:
-	logger.debug("Using GSettings backend.")
-	from imagecat.settings_gsettings import *
-settings = WallpaperPluginSettings()
-
-logger.info("Setting new wallpapers in {0}".format(type(settings)))
-bg_colors = ["000000"] * len(bg_images)
-bg_fill_types = [SOLIDFILL] * len(bg_images)
-bg_image_pos = [CENTERED] * len(bg_images)
-
-settings.delay()
-logger.debug("Setting bg_image to {0}".format(bg_images))
-settings.set_bg_image(bg_images)
-logger.debug("Setting bg_color1 to {0}".format(bg_colors))
-settings.set_bg_color1(bg_colors)
-logger.debug("Setting bg_color2 to {0}".format(bg_colors))
-settings.set_bg_color2(bg_colors)
-logger.debug("Setting bg_fill_type to {0}".format(bg_fill_types))
-settings.set_bg_fill_type(bg_fill_types)
-logger.debug("Setting bg_image_pos to {0}".format(bg_image_pos))
-settings.set_bg_image_pos(bg_image_pos)
-settings.apply()
-
-logger.info("All done!")
+rotate_wallpapers()
