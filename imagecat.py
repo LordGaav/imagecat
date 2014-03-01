@@ -17,7 +17,7 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys
+import sys, signal, time
 
 if sys.version_info < (2, 7):
 	print "Sorry, {0} requires Python 2.7.".format(rsscat.NAME)
@@ -82,4 +82,16 @@ imagecat.DESKTOPS = args.desktops
 imagecat.QUIET = args.quiet
 imagecat.VERBOSE = args.verbose
 
-rotate_wallpapers()
+signal.signal(signal.SIGINT, imagecat.signal_handler)
+signal.signal(signal.SIGTERM, imagecat.signal_handler)
+
+def main():
+	imagecat.initialize()
+	imagecat.startAll()
+
+	# Stay alive to handle signals
+	while True:
+		time.sleep(2)
+
+if __name__ == "__main__":
+	main()
