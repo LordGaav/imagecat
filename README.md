@@ -72,12 +72,13 @@ IMAGECAT(1)			 User Commands			   IMAGECAT(1)
 
 
 NAME
-       imagecat - manual page for imagecat version 0.2 (99de049)
+       imagecat - manual page for imagecat version 0.3 (3804217)
 
 DESCRIPTION
        usage: imagecat.py [-h] [--config CFG] [--imagedir DIR] [--tmpdir DIR]
 
-	      [--desktops D] [--quiet] [--verbose] [--version]
+	      [--desktops  D]  [--interval  I]	[--once] [--quiet] [--verbose]
+	      [--version]
 
        imagecat is an automatic wallpaper changer
 
@@ -97,6 +98,11 @@ DESCRIPTION
        --desktops D
 	      Amount of desktops (not physical monitors)
 
+       --interval I
+	      Time between wallpaper rotations, in seconds)
+
+       --once Only run once, instead of scheduled
+
        --quiet
 	      Don't print messages to stdout
 
@@ -114,35 +120,35 @@ CONFIGURATION
 	3. /etc/imagecat.config
 	4. imagecat.config in /usr/share/imagecat
 
-       Configuration  files  are  applied according to their priority, meaning
-       that options in /etc/imagecat.config can be overridden using  ~/.image-
-       cat.config,  which in turn can be overridden by specifying another con-
+       Configuration files are applied according to  their  priority,  meaning
+       that  options in /etc/imagecat.config can be overridden using ~/.image-
+       cat.config, which in turn can be overridden by specifying another  con-
        figuration file with --config
 
-       Most cli options can be specified in the configuration file,  the  most
+       Most  cli  options can be specified in the configuration file, the most
        useful options are probably:
 
-       imagedir  :  directory  of images to load. All files ending with exten-
-       sions *.jpg, *.jpeg, *.gif and *.png are loaded. Directories  are  tra-
+       imagedir : directory of images to load. All files  ending  with	exten-
+       sions  *.jpg,  *.jpeg, *.gif and *.png are loaded. Directories are tra-
        versed recursively.
 
        desktops : amount of virtual desktops.
 
 DEBIAN SPECIFIC
        The Debian package will by default install a file in /etc/imagecat.con-
-       fig, and use the autostart  option  to  disable	automatically  running
-       imagecat.  Imagecat will be automatically started when a user logs into
-       Gnome/Unity, but will not actually run  until  /etc/imagecat.config  is
-       edited  to allow autostart, or until an user creates ~/.imagecat.config
+       fig,  and  use  the  autostart  option to disable automatically running
+       imagecat. Imagecat will be automatically started when a user logs  into
+       Gnome/Unity,  but  will	not actually run until /etc/imagecat.config is
+       edited to allow autostart, or until an user creates  ~/.imagecat.config
        to achieve the same thing. The default /etc/imagecat.config will try to
-       look  for  wallpapers  in  /usr/share/wallpapers, an user will probably
+       look for wallpapers in /usr/share/wallpapers,  an  user	will  probably
        want to override this with their own directory.
 
 KNOWN ISSUES
-       I have not yet found a reliable way to determine the amount of  virtual
+       I  have not yet found a reliable way to determine the amount of virtual
        desktops. For now, this has to be specified manually using --desktops
 
 
 
-imagecat version 0.2 (99de049)	 February 2014			   IMAGECAT(1)
+imagecat version 0.3 (3804217)	  March 2014			   IMAGECAT(1)
 ```

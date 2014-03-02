@@ -42,6 +42,10 @@ def select_images():
 	logger.info("Found {0} active displays ({1} total displays)".format(len(active_displays), len(xrandr.displays)))
 	logger.info("Found {0} desktops".format(imagecat.DESKTOPS))
 
+	if len(images) < (len(active_displays) * imagecat.DESKTOPS):
+		logger.warn("Not enough images found for all displays and desktops, aborting...")
+		return None
+
 	random = Randomizer(images)
 
 	logger.debug("Randomizer checksum: {0}".format(random.checksum))
@@ -148,9 +152,11 @@ def rotate_wallpapers():
 	logger.info("Start rotation")
 
 	selection = select_images()
-	wallpapers = montage_images(*selection)
-	bg_images = set_wallpapers(wallpapers)
-	update_config(bg_images)
+
+	if selection is not None:
+		wallpapers = montage_images(*selection)
+		bg_images = set_wallpapers(wallpapers)
+		update_config(bg_images)
 
 	logger.info("All done!")
 
