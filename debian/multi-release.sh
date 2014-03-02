@@ -50,8 +50,31 @@ for i in $DISTS; do
 	(cd .. && make -f debian/Makefile source)
 
 	## Revert changelog
-	echo_red "Cleaing up"
+	echo_red "Cleaning up"
 	git checkout changelog
 done
 
+UPLOAD=u
+while [ "$UPLOAD" != "y" ] && [ "$UPLOAD" != "n" ]; do
+	echo -n "Upload to PPA now [y/n]? "
+	read UPLOAD
+done
+
 popd
+
+if [ "$UPLOAD" == "y" ]; then
+	NAME=$(cat debian/changelog | head -n1 | egrep -o "^[a-z]+")
+	VERSION=$(cat debian/changelog | head -n1 | egrep -o "\([0-9\.]+*\)" | egrep -o "[0-9\.]+")
+
+	for i in $DISTS; do
+		if [ "$i" == "source" ]; then
+			continue
+		fi
+		CHANGES="${NAME}_${VERSION}-${i}${SUFFIX}_source.changes"
+		echo_red "Uploading ${CHANGES} to PPA"
+		CHANGES="../${CHANGES}"
+		make -f debian/Makefile upload_to_ppa CHANGES="$CHANGES"
+	done
+fi
+
+echo_red "All done!"
