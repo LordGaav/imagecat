@@ -1,3 +1,24 @@
+imagecat (0.3) RELEASE; urgency=low
+
+  * Add custom postinst script
+  * Remove support for Ubuntu Raring
+  * Add note Nautilus drawing desktop items to README
+  * Refactor wallpaper rotation logic to separate functions.
+  * Add Scheduler and Threads
+  * Make imagecat run as scheduled threads
+  * Make interval between rotations configurable
+  * Add --once to allow a single rotation
+  * Make sure new wallpapers have unique filename
+  * Speed up saving wallpapers
+  * Refactor configuration parsing to allow reloads while running
+  * Set ps name to imagecat
+  * Remove old school load script and add config reload command
+  * Add auto-upload function to multi-release.sh
+  * Handle not enough images scenario
+  * Bump version, update README, update changelog
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Sun, 02 Mar 2014 11:26:54 +0100
+
 imagecat (0.2) RELEASE; urgency=low
 
   * Refactor GSettingsWrapper into SettingsWrapper
