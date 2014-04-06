@@ -53,11 +53,7 @@ Optionally, change imagedir to your own directory of images. By default, imageca
 
 By default, on Ubuntu, Nautilus will be responsible for drawing the background. Because of this, the Compiz Wallpaper plugin will not show any backgrounds. To fix this, you must tell Nautilus to stop rendering backgrounds.
 
-On Ubuntu Precise (and earlier):
-```
-gconftool-2 --set "/apps/nautilus/preferences/show_desktop" --type bool false
-```
-On Ubuntu Quantal (and later):
+On Ubuntu Precise (and later):
 ```
 dconf write /org/gnome/desktop/background/show-desktop-icons false
 ```
