@@ -51,19 +51,6 @@ The package will install a global config file in /etc/imagecat.config and will c
 
 Optionally, change imagedir to your own directory of images. By default, imagecat will use /usr/share/background.
 
-By default, on Ubuntu, Nautilus will be responsible for drawing the background. Because of this, the Compiz Wallpaper plugin will not show any backgrounds. To fix this, you must tell Nautilus to stop rendering backgrounds.
-
-On Ubuntu Precise (and earlier):
-```
-gconftool-2 --set "/apps/nautilus/preferences/show_desktop" --type bool false
-```
-On Ubuntu Quantal (and later):
-```
-dconf write /org/gnome/desktop/background/show-desktop-icons false
-```
-
-You'll probably have to restart Nautilus for this change to take effect, or just logout and login.
-
 Man page
 ========
 ```
@@ -72,7 +59,7 @@ IMAGECAT(1)			 User Commands			   IMAGECAT(1)
 
 
 NAME
-       imagecat - manual page for imagecat version 0.3 (3804217)
+       imagecat - manual page for imagecat version 0.4 (9a873ef)
 
 DESCRIPTION
        usage: imagecat.py [-h] [--config CFG] [--imagedir DIR] [--tmpdir DIR]
@@ -150,5 +137,21 @@ KNOWN ISSUES
 
 
 
-imagecat version 0.3 (3804217)	  March 2014			   IMAGECAT(1)
+imagecat version 0.4 (9a873ef)	  April 2014			   IMAGECAT(1)
 ```
+
+What to do if your wallpaper does not change
+============================================
+
+First off, make sure you either set `autorun=True` in the global config or your user config, or run imagecat manually using the `--once` option. If that doesn't work, read on.
+
+imagecat will try its best to enable the appropriate Compiz plugins. If this doesn't seem to work, first try to logout and login again, because Gnome only seems to pick these settings up at login. Also make sure that the "Wallpaper" and "PNG" plugin get enabled in Compiz. You can check this by installing the `compizconfig-settings-manager` package and running `ccsm`. The `dconf` tool can be found in `dconf-tools` on Ubuntu Precise, or `dconf-cli` on Ubuntu Saucy and later.
+
+For reference, below are the steps that imagecat tries to take to enable desktop wallpaper drawing by Compiz:
+
+* Disable "show-desktop-icons" in Gnome: 
+```
+dconf write /org/gnome/desktop/background/show-desktop-icons false
+```
+* Enabling the PNG plugin
+* Enabling the Wallpaper plugin

@@ -25,7 +25,7 @@ class XRandr(object):
 	Gathers information about connected screens using `xrandr` cli tool.
 	"""
 
-	randr_regex = re.compile("([a-zA-Z0-9]+) (connected|disconnected) (primary|)[ ]?([0-9]+)?[x]?([0-9]+)?([+-][0-9]+)?([+-][0-9]+)?[ ]?\(.+\)(?: ([0-9m]+) x ([0-9m]+))?")
+	randr_regex = re.compile("([a-zA-Z0-9]+) (connected|disconnected) (primary|)[ ]?([0-9]+)?[x]?([0-9]+)?([+-][0-9]+)?([+-][0-9]+)?[ ]?(?:[a-z]+)?[ ]?\(.+\)(?: ([0-9m]+) x ([0-9m]+))?")
 	""" Regex pattern to match the display lines in the output of `xrandr` """
 
 	displays = []

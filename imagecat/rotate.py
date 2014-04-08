@@ -17,7 +17,7 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os,time, platform
+import os, time, platform, logging
 import Image
 
 import imagecat
@@ -25,6 +25,14 @@ from imagecat.globber import Globber
 from imagecat.image import cropresize, montage
 from imagecat.randomizer import Randomizer
 from imagecat.xrandr import XRandr
+
+if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:
+	logging.getLogger("rotate.py").debug("Ubuntu 12.04 detected, using GConf backend.")
+	import imagecat.settings_gconf as Settings
+else:
+	logging.getLogger("rotate.py").debug("Using GSettings backend.")
+	import imagecat.settings_gsettings as Settings
+from imagecat.settings_gsettings import GnomeSettings
 
 def select_images():
 	"""
@@ -38,6 +46,10 @@ def select_images():
 
 	xrandr = XRandr()
 	active_displays = xrandr.get_connected_displays()
+
+	if len(active_displays) == 0:
+		logger.error("Found not active displays, aborting...")
+		return None
 
 	logger.info("Found {0} active displays ({1} total displays)".format(len(active_displays), len(xrandr.displays)))
 	logger.info("Found {0} desktops".format(imagecat.DESKTOPS))
@@ -109,20 +121,41 @@ def set_wallpapers(wallpapers):
 	
 	return bg_images
 
+def configure_compiz():
+	"""
+	Updates the appropriate settings for Compiz and Gnome, to enable Compiz to draw the background.
+	"""
+	logger = imagecat.getLogger("{0}.{1}".format(__name__, "configure_compiz"))
+
+	gnome = GnomeSettings()
+	core = Settings.CorePluginSettings()
+
+	if gnome.get_show_desktop_icons():
+		logger.info("Gnome is in charge of drawing the background, disabling...")
+		gnome.set_show_desktop_icons(False)
+
+	changed = False
+	plugins = core.get_activated_plugins()
+
+	if "wallpaper" not in plugins:
+		logger.info("Wallpaper plugin is not enabled, enabling...")
+		plugins.append("wallpaper")
+		changed = True
+
+	if "imgpng" not in plugins:
+		logger.info("PNG plugin is not enabled, enabling...")
+		plugins.append("imagepng")
+		changed = True
+
+	if changed:
+		core.set_activated_plugins(plugins)
+
 def update_config(bg_images):
 	"""
 	Updates the appropriate configuration settings, so that the new background images are displayed.
-	The appropriate configuration backend is selected based on Linux distribution, currently only
-	Ubuntu 12.04 and later are supported and tested.
 	"""
 	logger = imagecat.getLogger("{0}.{1}".format(__name__, "update_config"))
 
-	if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:
-		logger.debug("Ubuntu 12.04 detected, using GConf backend.")
-		import imagecat.settings_gconf as Settings
-	else:
-		logger.debug("Using GSettings backend.")
-		import imagecat.settings_gsettings as Settings
 	settings = Settings.WallpaperPluginSettings()
 
 	logger.info("Setting new wallpapers in {0}".format(type(settings)))
@@ -157,6 +190,8 @@ def rotate_wallpapers():
 		wallpapers = montage_images(*selection)
 		bg_images = set_wallpapers(wallpapers)
 		update_config(bg_images)
+
+	configure_compiz()
 
 	logger.info("All done!")
 

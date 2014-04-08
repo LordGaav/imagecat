@@ -26,7 +26,6 @@ if sys.version_info < (2, 7):
 setproctitle.setproctitle("imagecat")
 
 import imagecat
-from imagecat.rotate import rotate_wallpapers
 from argparse import ArgumentParser
 
 config_parser = ArgumentParser(description="Looking for config", add_help=False)

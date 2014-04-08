@@ -39,6 +39,10 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 		self.schema_key = schema_key
 		self.settings = Gio.Settings(self.schema_key, self.base_key)
 
+	def _get_boolean(self, key):
+		""" Retrieve a single boolean from a key in GSettings. """
+		return self.settings.get_boolean(key)
+
 	def _get_string_array(self, key):
 		"""Retrieve a list of string from a key in GSettings."""
 		return self.settings.get_strv(key)
@@ -50,6 +54,10 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 	def _get_int(self, key):
 		"""Retrieve a single integer from a key in GSettings."""
 		return self.settings.get_int(key)
+
+	def _set_boolean(self, key, value):
+		""" Set a single boolean value to a key in GSettings. """
+		return self.settings.set_boolean(key, value)
 
 	def _set_hexstring_array(self, key, lst):
 		""" Set a list of hexadecimal strings to a key in GSettings. The input is validated.  """
@@ -81,6 +89,28 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 		""" Apply active changes. Only valid after delay(). """
 		return self.settings.apply()
 
+class GnomeSettings(GSettingsSettingsWrapper):
+	"""
+	Retrieves settings for Gnome.
+	"""
+
+	base_key = "/org/gnome/desktop/background/"
+	""" Base key where Gnome keeps its settings in GSettings. """
+	schema_key = "org.gnome.desktop.background"
+
+	SHOWDESKTOPITEMS_KEY = "show-desktop-icons"
+
+	def __init__(self):
+		self._init_settings(self.base_key, self.schema_key)
+
+	def get_show_desktop_icons(self):
+		""" Retrieve the current status of "show-desktop-icons". """
+		return self._get_boolean(self.SHOWDESKTOPITEMS_KEY)
+
+	def set_show_desktop_icons(self, boolean):
+		""" Set "show-desktop-icons". """
+		return self._set_boolean(self.SHOWDESKTOPITEMS_KEY, boolean)
+
 class CorePluginSettings(GSettingsSettingsWrapper):
 	"""
 	Retrieves settings for the Compiz Core plugin.
@@ -88,23 +118,24 @@ class CorePluginSettings(GSettingsSettingsWrapper):
 
 	default_profile = "unity"
 	""" Default GSettings profile to use. Ubuntu uses "unity" by default.  """
-	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
+	base_key = "/org/compiz/profiles/%s/plugins/core/"
 	""" Base key where the Core plugin keeps its settings in GSettings. """
 	schema_key = "org.compiz.core"
-	""" Schema definition for Core plugin's settings. """
+
+	ACTIVEPLUGINS_KEY = "active-plugins"
 
 	def __init__(self, profile=None):
 		if profile == None:
 			profile = self.default_profile
 		self._init_settings(self.base_key % (profile), self.schema_key)
 
-	def get_hsize(self):
-		""" Retrieve the amount of workspaces (horizontally). """
-		return self._get_int("hsize")
+	def get_activated_plugins(self):
+		""" Retrieve the currently activated Compiz plugins. """
+		return self._get_string_array(self.ACTIVEPLUGINS_KEY)
 
-	def get_vsize(self):
-		""" Retrieve the amount of workspaces (vertically). """
-		return self._get_int("vsize")
+	def set_activated_plugins(self, plugins):
+		""" Set the currently activated Compiz plugins. """
+		return self._set_string_array(self.ACTIVEPLUGINS_KEY, plugins)
 
 class WallpaperPluginSettings(GSettingsSettingsWrapper):
 	"""
@@ -170,9 +201,18 @@ class WallpaperPluginSettings(GSettingsSettingsWrapper):
 		return self._set_int_array(self.BGIMAGEPOS_KEY, pos)
 
 if __name__ == "__main__":
+	g = GnomeSettings()
+	print g.get_show_desktop_icons()
+
 	c = CorePluginSettings()
-	print c.get_hsize()
-	print c.get_vsize()
+	plugins = c.get_activated_plugins()
+	print "wallpaper" in plugins
+	if "wallpaper" in plugins:
+		plugins.remove("wallpaper")
+	else:
+		plugins.append("wallpaper")
+	c.set_activated_plugins(plugins)
+
 	w = WallpaperPluginSettings()
 	print w.get_bg_image()
 	print w.get_bg_color1()

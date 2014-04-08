@@ -37,14 +37,24 @@ def cropresize(im, size, mode=Image.BICUBIC):
 	orig_ratio = orig[0] / orig[1]
 	size_ratio = size[0] / size[1]
 
+	def horizontal_fit(orig, size):
+		ratio = orig[0] / orig[1]
+		newx = size[0]
+		newy = int(newx / ratio)
+		return (newx, newy)
 
-	if size_ratio > 1:
-		newy = int(size[0] / orig_ratio)
-		intermediate = im.resize((size[0], newy), mode)
+	def vertical_fit(orig, size):
+		ratio = orig[0] / orig[1]
+		newy = size[1]
+		newx = int(newy * ratio)
+		return (newx, newy)
+
+	if size_ratio > orig_ratio:
+		newsize = horizontal_fit(orig, size)
 	else:
-		newx = int(size[1] * orig_ratio)
-		intermediate = im.resize((newx, size[1]), mode)
+		newsize = vertical_fit(orig, size)
 	
+	intermediate = im.resize(newsize, mode)
 	isize = intermediate.size
 
 	leftx = int(isize[0] / 2 - size[0] / 2)
