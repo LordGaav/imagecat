@@ -51,15 +51,6 @@ The package will install a global config file in /etc/imagecat.config and will c
 
 Optionally, change imagedir to your own directory of images. By default, imagecat will use /usr/share/background.
 
-By default, on Ubuntu, Nautilus will be responsible for drawing the background. Because of this, the Compiz Wallpaper plugin will not show any backgrounds. To fix this, you must tell Nautilus to stop rendering backgrounds.
-
-On Ubuntu Precise (and later):
-```
-dconf write /org/gnome/desktop/background/show-desktop-icons false
-```
-
-You'll probably have to restart Nautilus for this change to take effect, or just logout and login.
-
 Man page
 ========
 ```
