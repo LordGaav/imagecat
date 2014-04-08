@@ -57,7 +57,7 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 
 	def _set_boolean(self, key, value):
 		""" Set a single boolean value to a key in GSettings. """
-		return self.setting.set_boolean(key, value)
+		return self.settings.set_boolean(key, value)
 
 	def _set_hexstring_array(self, key, lst):
 		""" Set a list of hexadecimal strings to a key in GSettings. The input is validated.  """
