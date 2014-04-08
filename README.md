@@ -146,5 +146,5 @@ KNOWN ISSUES
 
 
 
-imagecat version 0.3 (3804217)	  March 2014			   IMAGECAT(1)
+imagecat version 0.3 (3804217)	  April 2014			   IMAGECAT(1)
 ```
