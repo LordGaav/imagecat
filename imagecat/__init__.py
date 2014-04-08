@@ -38,7 +38,6 @@ from configobj import ConfigObj
 from argparse import ArgumentParser, SUPPRESS
 from imagecat.threads import Threads
 from imagecat.scheduler import Scheduler
-from imagecat.rotate import rotate_wallpapers
 
 def getLogger(name, level=logging.INFO, handlers=[]):
 	logger = logging.getLogger(name)
@@ -157,6 +156,8 @@ def initialize():
 
 	if THREADS is None:
 		THREADS = Threads()
+
+	from imagecat.rotate import rotate_wallpapers
 
 	rotateThread = Scheduler(INTERVAL, rotate_wallpapers, "rotateThread", True)
 
