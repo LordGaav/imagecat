@@ -1,3 +1,22 @@
+imagecat (0.4) RELEASE; urgency=low
+
+  * Add python-imaging as dependency to source
+  * Fix wrong instructions on disabling Gnome background drawing
+  * Add missing dependency on compiz-plugins
+  * Fit image based one relation between original ratio and target ratio
+  * Detect cases without any active displays
+  * Don't choke on rotated displays
+  * Fix README fixup derp
+  * Add dconf as a package dependecy to easy installation steps
+  * Add code to enable / disable Compiz plugins
+  * Add code to enable / disable show-desktop-icons in Gnome
+  * Add automatic enabling of required Compiz plugins
+  * Remove package dependecy on dconf, and update instructions
+  * Move rotate_wallpapers import to last possible place, to avoid issues with Debian building
+  * Bump version, regenerate README, update changelog
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Tue, 08 Apr 2014 22:27:50 +0200
+
 imagecat (0.3) RELEASE; urgency=low
 
   * Add custom postinst script
