@@ -39,6 +39,10 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 		self.schema_key = schema_key
 		self.settings = Gio.Settings(self.schema_key, self.base_key)
 
+	def _get_boolean(self, key):
+		""" Retrieve a single boolean from a key in GSettings. """
+		return self.settings.get_boolean(key)
+
 	def _get_string_array(self, key):
 		"""Retrieve a list of string from a key in GSettings."""
 		return self.settings.get_strv(key)
@@ -50,6 +54,10 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 	def _get_int(self, key):
 		"""Retrieve a single integer from a key in GSettings."""
 		return self.settings.get_int(key)
+
+	def _set_boolean(self, key, value):
+		""" Set a single boolean value to a key in GSettings. """
+		return self.setting.set_boolean(key, value)
 
 	def _set_hexstring_array(self, key, lst):
 		""" Set a list of hexadecimal strings to a key in GSettings. The input is validated.  """
@@ -80,6 +88,28 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 	def apply(self):
 		""" Apply active changes. Only valid after delay(). """
 		return self.settings.apply()
+
+class GnomeSettings(GSettingsSettingsWrapper):
+	"""
+	Retrieves settings for Gnome.
+	"""
+
+	base_key = "/org/gnome/desktop/background/"
+	""" Base key where Gnome keeps its settings in GSettings. """
+	schema_key = "org.gnome.desktop.background"
+
+	SHOWDESKTOPITEMS_KEY = "show-desktop-icons"
+
+	def __init__(self):
+		self._init_settings(self.base_key, self.schema_key)
+
+	def get_show_desktop_icons(self):
+		""" Retrieve the current status of "show-desktop-icons". """
+		return self._get_boolean(self.SHOWDESKTOPITEMS_KEY)
+
+	def set_show_desktop_icons(self, boolean):
+		""" Set "show-desktop-icons". """
+		return self._set_boolean(self.SHOWDESKTOPITEMS_KEY, boolean)
 
 class CorePluginSettings(GSettingsSettingsWrapper):
 	"""
@@ -171,6 +201,9 @@ class WallpaperPluginSettings(GSettingsSettingsWrapper):
 		return self._set_int_array(self.BGIMAGEPOS_KEY, pos)
 
 if __name__ == "__main__":
+	g = GnomeSettings()
+	print g.get_show_desktop_icons()
+
 	c = CorePluginSettings()
 	plugins = c.get_activated_plugins()
 	print "wallpaper" in plugins
