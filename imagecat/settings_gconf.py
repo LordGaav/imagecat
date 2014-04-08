@@ -82,6 +82,25 @@ class GConfSettingsWrapper(SettingsWrapper):
 		return self.settings.suggest_sync()
 
 
+class CorePluginSettings(GConfSettingsWrapper):
+	""" Set and retrieves global settings for Compiz (for Ubuntu 12.04). """
+	base_key = "/apps/compiz-1/general/screen0/options/"
+	""" Base key where the global settings are in GConf. """
+	schema_key = None
+
+	ACTIVEPLUGINS_KEY = "active_plugins"
+
+	def __init__(self):
+		self._init_settings(self.base_key, self.schema_key)
+
+	def get_activated_plugins(self):
+		""" Retrieve the currently activated Compiz plugins. """
+		return self._get_string_array(self.ACTIVEPLUGINS_KEY)
+
+	def set_activated_plugins(self, plugins):
+		""" Set the currently activated Compiz plugins. """
+		return self._set_string_array(self.ACTIVEPLUGINS_KEY, plugins)
+
 class WallpaperPluginSettings(GConfSettingsWrapper):
 	""" Sets and retrieves settings for the Compiz Wallpaper plugin (for Ubuntu 12.04).  """
 
@@ -140,6 +159,15 @@ class WallpaperPluginSettings(GConfSettingsWrapper):
 		return self._set_int_array(self.BGIMAGEPOS_KEY, pos)
 
 if __name__ == "__main__":
+	c = CorePluginSettings()
+	plugins = c.get_activated_plugins()
+	print "wallpaper" in plugins
+	if "wallpaper" in plugins:
+		plugins.remove("wallpaper")
+	else:
+		plugins.append("wallpaper")
+	c.set_activated_plugins(plugins)
+
 	w = WallpaperPluginSettings()
 	print w.get_bg_image()
 	print w.get_bg_color1()

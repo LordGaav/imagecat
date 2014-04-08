@@ -88,23 +88,24 @@ class CorePluginSettings(GSettingsSettingsWrapper):
 
 	default_profile = "unity"
 	""" Default GSettings profile to use. Ubuntu uses "unity" by default.  """
-	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
+	base_key = "/org/compiz/profiles/%s/plugins/core/"
 	""" Base key where the Core plugin keeps its settings in GSettings. """
 	schema_key = "org.compiz.core"
-	""" Schema definition for Core plugin's settings. """
+
+	ACTIVEPLUGINS_KEY = "active-plugins"
 
 	def __init__(self, profile=None):
 		if profile == None:
 			profile = self.default_profile
 		self._init_settings(self.base_key % (profile), self.schema_key)
 
-	def get_hsize(self):
-		""" Retrieve the amount of workspaces (horizontally). """
-		return self._get_int("hsize")
+	def get_activated_plugins(self):
+		""" Retrieve the currently activated Compiz plugins. """
+		return self._get_string_array(self.ACTIVEPLUGINS_KEY)
 
-	def get_vsize(self):
-		""" Retrieve the amount of workspaces (vertically). """
-		return self._get_int("vsize")
+	def set_activated_plugins(self, plugins):
+		""" Set the currently activated Compiz plugins. """
+		return self._set_string_array(self.ACTIVEPLUGINS_KEY, plugins)
 
 class WallpaperPluginSettings(GSettingsSettingsWrapper):
 	"""
@@ -171,8 +172,14 @@ class WallpaperPluginSettings(GSettingsSettingsWrapper):
 
 if __name__ == "__main__":
 	c = CorePluginSettings()
-	print c.get_hsize()
-	print c.get_vsize()
+	plugins = c.get_activated_plugins()
+	print "wallpaper" in plugins
+	if "wallpaper" in plugins:
+		plugins.remove("wallpaper")
+	else:
+		plugins.append("wallpaper")
+	c.set_activated_plugins(plugins)
+
 	w = WallpaperPluginSettings()
 	print w.get_bg_image()
 	print w.get_bg_color1()
