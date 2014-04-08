@@ -39,6 +39,10 @@ def select_images():
 	xrandr = XRandr()
 	active_displays = xrandr.get_connected_displays()
 
+	if len(active_displays) == 0:
+		logger.error("Found not active displays, aborting...")
+		return None
+
 	logger.info("Found {0} active displays ({1} total displays)".format(len(active_displays), len(xrandr.displays)))
 	logger.info("Found {0} desktops".format(imagecat.DESKTOPS))
 
