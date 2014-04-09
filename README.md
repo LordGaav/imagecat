@@ -59,7 +59,7 @@ IMAGECAT(1)			 User Commands			   IMAGECAT(1)
 
 
 NAME
-       imagecat - manual page for imagecat version 0.4 (9a873ef)
+       imagecat - manual page for imagecat version 0.4.1 (b42be7e)
 
 DESCRIPTION
        usage: imagecat.py [-h] [--config CFG] [--imagedir DIR] [--tmpdir DIR]
@@ -137,7 +137,7 @@ KNOWN ISSUES
 
 
 
-imagecat version 0.4 (9a873ef)	  April 2014			   IMAGECAT(1)
+imagecat version 0.4.1 (b42be7e)  April 2014			   IMAGECAT(1)
 ```
 
 What to do if your wallpaper does not change
