@@ -18,7 +18,8 @@
 #
 
 from settingswrapper import SettingsWrapper
-import gconf
+from subprocess import Popen, PIPE
+import gconf, shlex
 
 SCALECROP = 0
 SCALE = 1
@@ -81,9 +82,97 @@ class GConfSettingsWrapper(SettingsWrapper):
 		""" Apply active changes. Suggest as sync to GConf. """
 		return self.settings.suggest_sync()
 
+class SettingsCliWrapper(SettingsWrapper):
+	""" Base class for manipulating settings using a cli client. """
+
+	def _call_tool(self, command):
+		print command
+		command = str(command.encode("utf-8").decode("ascii", "ignore"))
+		proc = Popen(shlex.split(command), stdout=PIPE, stderr=PIPE)
+		proc.wait()
+		q = proc.communicate()
+		j = q[0]
+
+		if proc.returncode != 0:
+			return None
+
+		return j
+
+class DConfSettingsCliWrapper(SettingsCliWrapper):
+
+	def _init_settings(self, base_key, schema_key):
+		self.base_key = base_key
+
+	def _get(self, key):
+		return self._call_tool("dconf read %s" % key)
+
+	def _set(self, key, value):
+		return self._call_tool("dconf write %s %s" % (key, value))
+
+	def _get_string_array(self, key):
+		"""Retrieve a list of string from a key in DConf."""
+
+		result = self._get(self.base_key + key)
+		try:
+			result = result.replace("[", "").replace("]", "").split(",")
+			result = map(lambda x: x.strip(), result)
+		except ValueError:
+			return None
+
+		return result
+
+	def _get_boolean(self, key):
+		""" Retrieve a single boolean from a key in DConf."""
+		result = self._get(self.base_key + key)
+
+		if result.lower() == "false":
+			result = False
+		else:
+			result = True
+		return result
+
+	def _set_string_array(self, key, value):
+		"""Set a list of string to a key in DConf. """
+
+		value = "[%s]" % (",".join(value))
+		return self._set(self.base_key + key, value, "string")
+
+	def _set_boolean(self, key, value):
+		""" Set a single boolean to a key in DConf. """
+
+		if value:
+			value = "true"
+		else:
+			value = "false"
+
+		return self._set(self.base_key + key, value)
+
+class GnomeSettings(DConfSettingsCliWrapper):
+	"""
+	Retrieves settings for Gnome using DConf client tool (for Ubuntu 12.04).
+	"""
+
+	base_key = "/org/gnome/desktop/background/"
+	""" Base key where Gnome keeps its settings in GSettings. """
+	schema_key = "org.gnome.desktop.background"
+
+	SHOWDESKTOPITEMS_KEY = "show-desktop-icons"
+
+	def __init__(self):
+		self._init_settings(self.base_key, self.schema_key)
+
+	def get_show_desktop_icons(self):
+		""" Retrieve the current status of "show-desktop-icons". """
+		return self._get_boolean(self.SHOWDESKTOPITEMS_KEY)
+
+	def set_show_desktop_icons(self, boolean):
+		""" Set "show-desktop-icons". """
+		return self._set_boolean(self.SHOWDESKTOPITEMS_KEY, boolean)
+
 
 class CorePluginSettings(GConfSettingsWrapper):
 	""" Set and retrieves global settings for Compiz (for Ubuntu 12.04). """
+
 	base_key = "/apps/compiz-1/general/screen0/options/"
 	""" Base key where the global settings are in GConf. """
 	schema_key = None
@@ -159,6 +248,9 @@ class WallpaperPluginSettings(GConfSettingsWrapper):
 		return self._set_int_array(self.BGIMAGEPOS_KEY, pos)
 
 if __name__ == "__main__":
+	g = GnomeSettings()
+	print g.get_show_desktop_icons()
+
 	c = CorePluginSettings()
 	plugins = c.get_activated_plugins()
 	print "wallpaper" in plugins
