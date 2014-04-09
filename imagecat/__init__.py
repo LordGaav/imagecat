@@ -18,8 +18,8 @@
 #
 
 NAME = "imagecat"
-VERSION = "0.4"
-BUILD = "9a873ef"
+VERSION = "0.4.1"
+BUILD = "b42be7e"
 
 STARTARG = None
 

@@ -1,3 +1,11 @@
+imagecat (0.4.1) RELEASE; urgency=low
+
+  * Work around issues on Precise by introducing a CLI wrapper around DConf
+  * Make Precise codepath use the DConf CLI interface for GnomeSettings
+  * Bump version, regenerate README, update changelog
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Wed, 09 Apr 2014 18:31:28 +0200
+
 imagecat (0.4) RELEASE; urgency=low
 
   * Add python-imaging as dependency to source
