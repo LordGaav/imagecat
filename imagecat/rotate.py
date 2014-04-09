@@ -32,7 +32,6 @@ if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:
 else:
 	logging.getLogger("rotate.py").debug("Using GSettings backend.")
 	import imagecat.settings_gsettings as Settings
-from imagecat.settings_gsettings import GnomeSettings
 
 def select_images():
 	"""
@@ -127,7 +126,7 @@ def configure_compiz():
 	"""
 	logger = imagecat.getLogger("{0}.{1}".format(__name__, "configure_compiz"))
 
-	gnome = GnomeSettings()
+	gnome = Settings.GnomeSettings()
 	core = Settings.CorePluginSettings()
 
 	if gnome.get_show_desktop_icons():

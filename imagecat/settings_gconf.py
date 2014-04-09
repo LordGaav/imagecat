@@ -86,7 +86,6 @@ class SettingsCliWrapper(SettingsWrapper):
 	""" Base class for manipulating settings using a cli client. """
 
 	def _call_tool(self, command):
-		print command
 		command = str(command.encode("utf-8").decode("ascii", "ignore"))
 		proc = Popen(shlex.split(command), stdout=PIPE, stderr=PIPE)
 		proc.wait()
@@ -125,7 +124,7 @@ class DConfSettingsCliWrapper(SettingsCliWrapper):
 		""" Retrieve a single boolean from a key in DConf."""
 		result = self._get(self.base_key + key)
 
-		if result.lower() == "false":
+		if result.strip().lower() == "false":
 			result = False
 		else:
 			result = True
