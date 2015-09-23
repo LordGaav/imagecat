@@ -34,13 +34,14 @@ setup(
 	url="https://github.com/LordGaav/imagecat",
 	packages=[PACKAGE_NAME],
 	setup_requires=[
+		"setuptools",
 		"configobj"
 	],
 	install_requires=[
 		"configobj",
 		"Pillow",
-		"PyGObject",
 		"setproctitle"
+		## We also depend on python-gobject (==12.04) or python-gi (>=14.04), but there is no proper pypi package available for those.
 	],
 	entry_points={"console_scripts": ["{0} = {1}.cli:main".format(NAME, PACKAGE_NAME)]}
 )
