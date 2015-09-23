@@ -32,12 +32,9 @@ setup(
 	author="Nick Douma",
 	author_email="n.douma@nekoconeko.nl",
 	url="https://github.com/LordGaav/imagecat",
-	packages=[
-		PACKAGE_NAME,
-	],
-	data_files=[],
+	packages=[PACKAGE_NAME],
 	setup_requires=[
-		'configobj'
+		"configobj"
 	],
 	install_requires=[
 		"configobj",

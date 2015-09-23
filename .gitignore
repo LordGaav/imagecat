@@ -10,10 +10,14 @@
 ## Ant generated files
 /doc/*.1
 /*.tar.bz2
+/*.egg-info
 
 ## Debian build files
 /debian/control
+/debian/imagecat
 /debian/imagecat.*
+!/debian/imagecat.install
+!/debian/imagecat.postinst
 /debian/files
 /debian/tmp
 /debian/*.log

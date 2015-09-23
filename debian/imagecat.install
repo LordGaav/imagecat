@@ -1,0 +1,8 @@
+#!/usr/bin/dh-exec
+icons/imagecat_114.png => usr/share/icons/hicolor/128x128/apps/imagecat.png
+icons/imagecat_72.png => usr/share/icons/hicolor/72x72/apps/imagecat.png
+icons/imagecat_57.png => usr/share/icons/hicolor/64x64/apps/imagecat.png
+icons/imagecat_57.png => usr/share/icons/hicolor/48x48/apps/imagecat.png
+files/gnome-autostart.desktop => etc/xdg/autostart/imagecat.desktop
+files/debian-default.config => etc/imagecat.config
+files/imagecat-reload.sh => usr/bin/imagecat-reload

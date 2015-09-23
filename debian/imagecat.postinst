@@ -1,0 +1,14 @@
+#!/bin/sh
+set -e
+. /usr/share/debconf/confmodule
+case "$1" in
+configure)
+chmod +x /usr/bin/imagecat-reload || exit 1
+;;
+esac
+
+#DEBHELPER#
+
+db_stop
+
+exit 0
