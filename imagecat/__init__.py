@@ -17,10 +17,6 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-NAME = "imagecat"
-VERSION = "0.4.1"
-BUILD = "b42be7e"
-
 STARTARG = None
 
 THREADS = None
@@ -38,6 +34,7 @@ from configobj import ConfigObj
 from argparse import ArgumentParser, SUPPRESS
 from imagecat.threads import Threads
 from imagecat.scheduler import Scheduler
+from imagecat.version import NAME, VERSION, BUILD
 
 def getLogger(name, level=logging.INFO, handlers=[]):
 	logger = logging.getLogger(name)
