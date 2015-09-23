@@ -1,65 +1,76 @@
 #!/usr/bin/env python
 # Copyright (c) 2014 Nick Douma < n.douma [at] nekoconeko . nl >
-# 
+#
 # This file is part of imagecat.
-# 
+#
 # imagecat is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # imagecat is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, signal, time, setproctitle
+import setproctitle
+import signal
+import sys
+import time
+
+import imagecat
 
 if sys.version_info < (2, 7):
-	print "Sorry, {0} requires Python 2.7.".format(rsscat.NAME)
+	print "Sorry, {0} requires Python 2.7.".format(imagecat.NAME)
 	sys.exit(1)
 
 setproctitle.setproctitle("imagecat")
 
-import imagecat
-from argparse import ArgumentParser
 
-config_parser = ArgumentParser(description="Looking for config", add_help=False)
-config_parser.add_argument('--config', type=str)
-config_parser.add_argument("--help", action="store_true", default=False)
-config_parser.add_argument("--quiet", action="store_true", default=False)
-config_parser.add_argument("--verbose", action="store_true", default=False)
-config_parser.add_argument("--version", action="store_true", default=False)
+def initialize():
+	from argparse import ArgumentParser
 
-config_arg, config_unknown = config_parser.parse_known_args()
+	config_parser = ArgumentParser(description="Looking for config", add_help=False)
+	config_parser.add_argument('--config', type=str)
+	config_parser.add_argument("--help", action="store_true", default=False)
+	config_parser.add_argument("--quiet", action="store_true", default=False)
+	config_parser.add_argument("--verbose", action="store_true", default=False)
+	config_parser.add_argument("--version", action="store_true", default=False)
 
-log_handlers = {}
-if not config_arg.version and not config_arg.help:
-	log_handlers['syslog'] = None
-loglevel = "INFO"
-if config_arg.verbose:
-	loglevel = "DEBUG"
-if not config_arg.quiet:
-	log_handlers['console'] = None
+	config_arg, config_unknown = config_parser.parse_known_args()
 
-logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
+	log_handlers = {}
+	if not config_arg.version and not config_arg.help:
+		log_handlers['syslog'] = None
+	loglevel = "INFO"
+	if config_arg.verbose:
+		loglevel = "DEBUG"
+	if not config_arg.quiet:
+		log_handlers['console'] = None
 
-if config_arg.version:
-	logger.info("{0} version {1} ({2})".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
-	sys.exit(0)
+	logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
 
-if not config_arg.help:
-	logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
+	if config_arg.version:
+		logger.info("{0} version {1} ({2})".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
+		sys.exit(0)
 
-imagecat.STARTARG = config_arg
+	if not config_arg.help:
+		logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
 
-imagecat.reloadConfig()
+	imagecat.STARTARG = config_arg
+
+	imagecat.reloadConfig()
+
+	return logger
+
 
 def main():
+	logger = initialize()
+
 	if imagecat.ONCE:
 		logger.info("Single run mode")
 		from imagecat.rotate import rotate_wallpapers
