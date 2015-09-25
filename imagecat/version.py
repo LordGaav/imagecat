@@ -19,5 +19,5 @@
 
 
 NAME = "imagecat"
-VERSION = "0.4.1"
-BUILD = "b42be7e"
+VERSION = "0.4.2"
+BUILD = "b16c6e0"
