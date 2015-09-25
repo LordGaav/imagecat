@@ -21,7 +21,7 @@ from imagecat.globber import Globber
 from imagecat.image import cropresize, montage
 from imagecat.randomizer import Randomizer
 from imagecat.xrandr import XRandr
-from imagecat import IMAGEDIR, DESKTOPS, TMPDIR
+import imagecat  # only for config variables
 import logging
 import platform
 import time
@@ -43,7 +43,7 @@ def select_images():
 	Returns a tuple containing display information, and the selected images.
 	"""
 	logger = logging.getLogger("{0}.{1}".format(__name__, "select_images"))
-	images = Globber(path=IMAGEDIR, filter=['*.jpg', '*.jpeg', '*.gif', '*.png'], recursive=True).glob()
+	images = Globber(path=imagecat.IMAGEDIR, filter=['*.jpg', '*.jpeg', '*.gif', '*.png'], recursive=True).glob()
 
 	logger.info("Found {0} images".format(len(images)))
 
@@ -55,9 +55,9 @@ def select_images():
 		return None
 
 	logger.info("Found {0} active displays ({1} total displays)".format(len(active_displays), len(xrandr.displays)))
-	logger.info("Found {0} desktops".format(DESKTOPS))
+	logger.info("Found {0} desktops".format(imagecat.DESKTOPS))
 
-	if len(images) < (len(active_displays) * DESKTOPS):
+	if len(images) < (len(active_displays) * imagecat.DESKTOPS):
 		logger.warn("Not enough images found for all displays and desktops, aborting...")
 		return None
 
@@ -67,7 +67,7 @@ def select_images():
 
 	# TODO: invalidate blacklist when checksum changes
 
-	selection = random.get_random(len(active_displays) * DESKTOPS)
+	selection = random.get_random(len(active_displays) * imagecat.DESKTOPS)
 
 	logger.info("Selected {0} random images".format(len(selection)))
 
@@ -85,7 +85,7 @@ def montage_images(displays, selection):
 	i = 0
 	wallpapers = []
 	offsets = map(lambda x: x['offset'], displays)
-	while i < DESKTOPS:
+	while i < imagecat.DESKTOPS:
 		logger.info("Generating wallpaper for desktop {0}".format(i))
 		tmp_images = []
 		for m in displays:
@@ -109,7 +109,7 @@ def set_wallpapers(wallpapers):
 	logger = logging.getLogger("{0}.{1}".format(__name__, "set_wallpapers"))
 
 	logger.info("Remove old wallpaper files")
-	old_wallpapers = Globber(path=TMPDIR, filter=['wallpaper-*.*'], recursive=False).glob()
+	old_wallpapers = Globber(path=imagecat.TMPDIR, filter=['wallpaper-*.*'], recursive=False).glob()
 
 	for old in old_wallpapers:
 		logger.debug("Unlinking {0}".format(old))
@@ -118,7 +118,7 @@ def set_wallpapers(wallpapers):
 	j = 0
 	bg_images = []
 	for wallpaper in wallpapers:
-		filename = os.path.join(TMPDIR, "wallpaper-{0}-{1}-{2}.png".format(j, os.getpid(), int(time.time())))
+		filename = os.path.join(imagecat.TMPDIR, "wallpaper-{0}-{1}-{2}.png".format(j, os.getpid(), int(time.time())))
 		logger.info("Saving wallpaper {0} to {1}".format(j, filename))
 		wallpaper.save(filename, compress_level=0)
 		j += 1

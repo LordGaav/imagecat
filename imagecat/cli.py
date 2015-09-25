@@ -21,10 +21,11 @@ import setproctitle
 import signal
 import sys
 import time
-from imagecat import ONCE, INTERVAL, signal_handler, config_handler, set_startarg
+from imagecat import signal_handler, config_handler, set_startarg
 from imagecat import getLogger as get_logger, reloadConfig as reload_config, initialize as imagecat_initialize,\
 	startAll as imagecat_startall
 from imagecat.version import NAME, VERSION, BUILD
+import imagecat  # only for config variables
 
 if sys.version_info < (2, 7):
 	print "Sorry, {0} requires Python 2.7.".format(NAME)
@@ -73,12 +74,12 @@ def initialize():
 def main():
 	logger = initialize()
 
-	if ONCE:
+	if imagecat.ONCE is True:
 		logger.info("Single run mode")
 		from imagecat.rotate import rotate_wallpapers
 		rotate_wallpapers()
 	else:
-		logger.info("Wallpapers will rotate every {0} seconds.".format(INTERVAL))
+		logger.info("Wallpapers will rotate every {0} seconds.".format(imagecat.INTERVAL))
 
 		signal.signal(signal.SIGINT, signal_handler)
 		signal.signal(signal.SIGTERM, signal_handler)
