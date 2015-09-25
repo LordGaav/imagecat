@@ -1,24 +1,24 @@
-# 
+#
 # Copyright (c) 2014 Nick Douma < n.douma [at] nekoconeko . nl >
-# 
+#
 # This file is part of imagecat.
-# 
+#
 # imagecat is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # imagecat is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
 """
-Functions to manipulate images. All methods that process images expect a 
+Functions to manipulate images. All methods that process images expect a
 properly initiated PIL Image object.
 """
 
@@ -26,8 +26,9 @@ properly initiated PIL Image object.
 from __future__ import division
 import Image
 
+
 def cropresize(im, size, mode=Image.BICUBIC):
-	""" 
+	"""
 	Scales a PIL Image to the specified size, cropping the parts that
 	would fall outside the specified dimensions. A PIL resize mode may be
 	specified, bicubic resize is the default, use NEAREST/BILINEAR/BICUBIC
@@ -53,18 +54,19 @@ def cropresize(im, size, mode=Image.BICUBIC):
 		newsize = horizontal_fit(orig, size)
 	else:
 		newsize = vertical_fit(orig, size)
-	
+
 	intermediate = im.resize(newsize, mode)
 	isize = intermediate.size
 
 	leftx = int(isize[0] / 2 - size[0] / 2)
 	lefty = int(isize[1] / 2 - size[1] / 2)
-	
+
 	return intermediate.crop((leftx, lefty, leftx + size[0], lefty + size[1]))
+
 
 def montage(images, offsets):
 	"""
-	Takes a list of PIL Images and offsets, and montages together. The result is 
+	Takes a list of PIL Images and offsets, and montages together. The result is
 	one big PIL Image with all specified Images contained in it, at the specified
 	offsets.
 	"""
@@ -87,5 +89,5 @@ def montage(images, offsets):
 
 	for image, offset in zip(images, offsets):
 		canvas.paste(image, (offset[0], offset[1]))
-	
+
 	return canvas

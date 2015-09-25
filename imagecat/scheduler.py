@@ -15,7 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 
-import threading, datetime, time, logging
+import datetime
+import logging
+import threading
+import time
+
 
 class Scheduler(threading.Thread):
 	def __init__(self, delay, action, name, startNow=False, *args, **kwargs):
@@ -39,12 +43,12 @@ class Scheduler(threading.Thread):
 				self.lastRun += datetime.timedelta(seconds=startNow)
 			wait = (self.lastRun - now).seconds + delay
 			self.logger.debug("Thread {0} will start in {1} seconds".format(name, wait))
-	
+
 	def setStartAction(self, action, *args, **kwargs):
 		self.init_action = action
 		self.init_args = args
 		self.init_kwargs = kwargs
-	
+
 	def setStopAction(self, action, *args, **kwargs):
 		self.stop_action = action
 		self.stop_args = args
