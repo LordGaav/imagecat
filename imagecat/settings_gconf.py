@@ -1,25 +1,26 @@
-# 
+#
 # Copyright (c) 2014 Nick Douma < n.douma [at] nekoconeko . nl >
-# 
+#
 # This file is part of imagecat.
-# 
+#
 # imagecat is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # imagecat is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
 from settingswrapper import SettingsWrapper
 from subprocess import Popen, PIPE
-import gconf, shlex
+import gconf
+import shlex
 
 SCALECROP = 0
 SCALE = 1
@@ -30,6 +31,7 @@ CENTERTILED = 4
 SOLIDFILL = 0
 GRADIENTVERT = 1
 GRADIENTHORIZ = 2
+
 
 class GConfSettingsWrapper(SettingsWrapper):
 	""" Base class for manipulating settings in GConf. """
@@ -82,6 +84,7 @@ class GConfSettingsWrapper(SettingsWrapper):
 		""" Apply active changes. Suggest as sync to GConf. """
 		return self.settings.suggest_sync()
 
+
 class SettingsCliWrapper(SettingsWrapper):
 	""" Base class for manipulating settings using a cli client. """
 
@@ -96,6 +99,7 @@ class SettingsCliWrapper(SettingsWrapper):
 			return None
 
 		return j
+
 
 class DConfSettingsCliWrapper(SettingsCliWrapper):
 
@@ -146,6 +150,7 @@ class DConfSettingsCliWrapper(SettingsCliWrapper):
 
 		return self._set(self.base_key + key, value)
 
+
 class GnomeSettings(DConfSettingsCliWrapper):
 	"""
 	Retrieves settings for Gnome using DConf client tool (for Ubuntu 12.04).
@@ -189,6 +194,7 @@ class CorePluginSettings(GConfSettingsWrapper):
 		""" Set the currently activated Compiz plugins. """
 		return self._set_string_array(self.ACTIVEPLUGINS_KEY, plugins)
 
+
 class WallpaperPluginSettings(GConfSettingsWrapper):
 	""" Sets and retrieves settings for the Compiz Wallpaper plugin (for Ubuntu 12.04).  """
 
@@ -205,7 +211,7 @@ class WallpaperPluginSettings(GConfSettingsWrapper):
 
 	def __init__(self):
 		self._init_settings(self.base_key, self.schema_key)
-	
+
 	def get_bg_image(self):
 		""" Retrieve the currently set background images from GSettings. """
 		return self._get_string_array(self.BGIMAGE_KEY)

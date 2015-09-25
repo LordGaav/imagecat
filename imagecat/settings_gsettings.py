@@ -1,18 +1,18 @@
-# 
+#
 # Copyright (c) 2014 Nick Douma < n.douma [at] nekoconeko . nl >
-# 
+#
 # This file is part of imagecat.
-# 
+#
 # imagecat is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # imagecat is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
@@ -29,6 +29,7 @@ CENTERTILED = 4
 SOLIDFILL = 0
 GRADIENTVERT = 1
 GRADIENTHORIZ = 2
+
 
 class GSettingsSettingsWrapper(SettingsWrapper):
 	""" Base class for manipulating settings in GSettings. """
@@ -89,6 +90,7 @@ class GSettingsSettingsWrapper(SettingsWrapper):
 		""" Apply active changes. Only valid after delay(). """
 		return self.settings.apply()
 
+
 class GnomeSettings(GSettingsSettingsWrapper):
 	"""
 	Retrieves settings for Gnome.
@@ -111,6 +113,7 @@ class GnomeSettings(GSettingsSettingsWrapper):
 		""" Set "show-desktop-icons". """
 		return self._set_boolean(self.SHOWDESKTOPITEMS_KEY, boolean)
 
+
 class CorePluginSettings(GSettingsSettingsWrapper):
 	"""
 	Retrieves settings for the Compiz Core plugin.
@@ -125,7 +128,7 @@ class CorePluginSettings(GSettingsSettingsWrapper):
 	ACTIVEPLUGINS_KEY = "active-plugins"
 
 	def __init__(self, profile=None):
-		if profile == None:
+		if not profile:
 			profile = self.default_profile
 		self._init_settings(self.base_key % (profile), self.schema_key)
 
@@ -136,6 +139,7 @@ class CorePluginSettings(GSettingsSettingsWrapper):
 	def set_activated_plugins(self, plugins):
 		""" Set the currently activated Compiz plugins. """
 		return self._set_string_array(self.ACTIVEPLUGINS_KEY, plugins)
+
 
 class WallpaperPluginSettings(GSettingsSettingsWrapper):
 	"""
@@ -156,10 +160,10 @@ class WallpaperPluginSettings(GSettingsSettingsWrapper):
 	BGIMAGEPOS_KEY = "bg-image-pos"
 
 	def __init__(self, profile=None):
-		if profile == None:
+		if not profile:
 			profile = self.default_profile
 		self._init_settings(self.base_key % (profile), self.schema_key)
-	
+
 	def get_bg_image(self):
 		""" Retrieve the currently set background images from GSettings. """
 		return self._get_string_array(self.BGIMAGE_KEY)

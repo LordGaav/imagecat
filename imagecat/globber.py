@@ -1,23 +1,25 @@
-# 
+#
 # Copyright (c) 2014 Nick Douma < n.douma [at] nekoconeko . nl >
-# 
+#
 # This file is part of imagecat.
-# 
+#
 # imagecat is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # imagecat is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os,fnmatch
+import fnmatch
+import os
+
 
 class Globber(object):
 	"""
@@ -29,7 +31,7 @@ class Globber(object):
 		self.path = path
 		self.filter = filter
 		self.recursive = recursive
-	
+
 	def glob(self):
 		"""
 		Traverse directory, and return all absolute filenames of files that
