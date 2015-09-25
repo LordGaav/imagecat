@@ -1,3 +1,22 @@
+imagecat (0.4.2) RELEASE; urgency=medium
+
+  Change build system to setuptools and clean up code.
+
+  * Move version information to separate file
+  * Drop saucy support
+  * Move entrypoint inside package and encapsulate logic into functions
+  * Restructure Debian control files
+  * Add extra installable files to Debian configuration
+  * Phase out build.xml and use a Makefile + setuptools instead
+  * Fix explicit dependencies and add mention of python-gi
+  * Flake8 ALL the things!
+  * Avoid using imagecat module directly and import all used objects explicitely
+  * Explicitely import all logging handlers
+  * Do use the imagecat module directly when using config variables.
+  * Bump version, update changelog
+
+ -- Nick Douma <n.douma@nekoconeko.nl>  Fri, 25 Sep 2015 12:10:38 +0200
+
 imagecat (0.4.1) RELEASE; urgency=low
 
   * Work around issues on Precise by introducing a CLI wrapper around DConf
