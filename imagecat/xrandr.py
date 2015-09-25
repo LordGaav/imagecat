@@ -1,18 +1,18 @@
-# 
+#
 # Copyright (c) 2014 Nick Douma < n.douma [at] nekoconeko . nl >
-# 
+#
 # This file is part of imagecat.
-# 
+#
 # imagecat is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # imagecat is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
@@ -20,12 +20,13 @@
 from subprocess import Popen, PIPE
 import re
 
+
 class XRandr(object):
 	"""
 	Gathers information about connected screens using `xrandr` cli tool.
 	"""
 
-	randr_regex = re.compile("([a-zA-Z0-9]+) (connected|disconnected) (primary|)[ ]?([0-9]+)?[x]?([0-9]+)?([+-][0-9]+)?([+-][0-9]+)?[ ]?(?:[a-z]+)?[ ]?\(.+\)(?: ([0-9m]+) x ([0-9m]+))?")
+	randr_regex = re.compile("([a-zA-Z0-9]+) (connected|disconnected) (primary|)[ ]?([0-9]+)?[x]?([0-9]+)?([+-][0-9]+)?([+-][0-9]+)?[ ]?(?:[a-z]+)?[ ]?\(.+\)(?: ([0-9m]+) x ([0-9m]+))?")  # noqa
 	""" Regex pattern to match the display lines in the output of `xrandr` """
 
 	displays = []
@@ -38,7 +39,7 @@ class XRandr(object):
 
 	def __init__(self):
 		self.parse_xrandr()
-	
+
 	def _call_xrandr(self):
 		"""
 		Convenience method to call `xrandr` using Popen and return stdout and stderr. Will

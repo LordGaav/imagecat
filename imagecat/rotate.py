@@ -17,14 +17,17 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, time, platform, logging
-import Image
-
-import imagecat
 from imagecat.globber import Globber
 from imagecat.image import cropresize, montage
 from imagecat.randomizer import Randomizer
 from imagecat.xrandr import XRandr
+import imagecat  # only for config variables
+import logging
+import platform
+import time
+import os
+import Image
+
 
 if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:
 	logging.getLogger("rotate.py").debug("Ubuntu 12.04 detected, using GConf backend.")
@@ -33,12 +36,13 @@ else:
 	logging.getLogger("rotate.py").debug("Using GSettings backend.")
 	import imagecat.settings_gsettings as Settings
 
+
 def select_images():
 	"""
-	Select a set of images based on the current display configuration. 
+	Select a set of images based on the current display configuration.
 	Returns a tuple containing display information, and the selected images.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "select_images"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "select_images"))
 	images = Globber(path=imagecat.IMAGEDIR, filter=['*.jpg', '*.jpeg', '*.gif', '*.png'], recursive=True).glob()
 
 	logger.info("Found {0} images".format(len(images)))
@@ -69,13 +73,14 @@ def select_images():
 
 	return (active_displays, selection)
 
+
 def montage_images(displays, selection):
 	"""
 	Montage images based on display information and a list of images.
-	The end result is a set of Images that are the size of the total X viewport, 
+	The end result is a set of Images that are the size of the total X viewport,
 	in which the source Images are pasted at the correct position.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "montage_images"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "montage_images"))
 
 	i = 0
 	wallpapers = []
@@ -93,14 +98,15 @@ def montage_images(displays, selection):
 		logger.debug("Montaging images to wallpaper")
 		wallpapers.append(montage(tmp_images, offsets))
 		i += 1
-	
+
 	return wallpapers
+
 
 def set_wallpapers(wallpapers):
 	"""
 	Removes all old wallpaper files in TMPDIR, and saves the given set of wallpapers as files.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "set_wallpapers"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "set_wallpapers"))
 
 	logger.info("Remove old wallpaper files")
 	old_wallpapers = Globber(path=imagecat.TMPDIR, filter=['wallpaper-*.*'], recursive=False).glob()
@@ -117,14 +123,15 @@ def set_wallpapers(wallpapers):
 		wallpaper.save(filename, compress_level=0)
 		j += 1
 		bg_images.append(filename)
-	
+
 	return bg_images
+
 
 def configure_compiz():
 	"""
 	Updates the appropriate settings for Compiz and Gnome, to enable Compiz to draw the background.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "configure_compiz"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "configure_compiz"))
 
 	gnome = Settings.GnomeSettings()
 	core = Settings.CorePluginSettings()
@@ -149,11 +156,12 @@ def configure_compiz():
 	if changed:
 		core.set_activated_plugins(plugins)
 
+
 def update_config(bg_images):
 	"""
 	Updates the appropriate configuration settings, so that the new background images are displayed.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "update_config"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "update_config"))
 
 	settings = Settings.WallpaperPluginSettings()
 
@@ -175,12 +183,13 @@ def update_config(bg_images):
 	settings.set_bg_image_pos(bg_image_pos)
 	settings.apply()
 
+
 def rotate_wallpapers():
 	"""
 	Rotate the currently set wallpapers and select new ones randomly, based on the currently
 	connected displays.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "rotate_wallpapers"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "rotate_wallpapers"))
 	logger.info("Start rotation")
 
 	selection = select_images()
@@ -193,4 +202,3 @@ def rotate_wallpapers():
 	configure_compiz()
 
 	logger.info("All done!")
-

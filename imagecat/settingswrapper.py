@@ -1,21 +1,22 @@
-# 
+#
 # Copyright (c) 2014 Nick Douma < n.douma [at] nekoconeko . nl >
-# 
+#
 # This file is part of imagecat.
-# 
+#
 # imagecat is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # imagecat is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
+
 
 class SettingsWrapper(object):
 	""" Base class for manipulating GConfig / GSettings. """
@@ -23,9 +24,9 @@ class SettingsWrapper(object):
 	def _init_settings(self, profile=None):
 		""" Calls to this functions should cause the internal settings to load or refresh. """
 		raise NotImplementedError("_init_settings is not implemented.")
-	
+
 	def _check_list_type(self, lst, tp):
-		""" 
+		"""
 		Performs a simple validation of the given list against the given type,
 		by filtering the list against the type. If the filtered list has a different
 		length than the input, this function returns False.

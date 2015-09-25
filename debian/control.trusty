@@ -1,1 +1,11 @@
-control.saucy
+
+Package: imagecat
+Architecture: all
+Section: python
+Depends: ${misc:Depends}, ${python:Depends}, compiz-plugins, python-gi, x11-xserver-utils
+Description: Automatic wallpaper changer with multi-monitor support.
+ This tool can automatically detect your monitor layout, and create wallpapers accordingly.
+ .
+ Wallpapers are randomly selected from a supplied folder of images. Every screen will get
+ its own image, as will each desktop. A setup with two monitors and four desktops will
+ therefor require at least eight images.

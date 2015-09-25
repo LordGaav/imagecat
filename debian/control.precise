@@ -1,10 +1,11 @@
+
 Package: imagecat
 Architecture: all
 Section: python
-Depends: ${misc:Depends}, ${python:Depends}, compiz-plugins-extra, python-gobject, python-configobj, python-imaging, python-setproctitle, x11-xserver-utils, dconf-tools
+Depends: ${misc:Depends}, ${python:Depends}, compiz-plugins-extra, python-gobject, x11-xserver-utils, dconf-tools
 Description: Automatic wallpaper changer with multi-monitor support.
  This tool can automatically detect your monitor layout, and create wallpapers accordingly.
  .
  Wallpapers are randomly selected from a supplied folder of images. Every screen will get
- its own image, as will each desktop. A setup with two monitors and four desktops will 
+ its own image, as will each desktop. A setup with two monitors and four desktops will
  therefor require at least eight images.

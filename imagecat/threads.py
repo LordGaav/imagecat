@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 
-import threading, logging
+import logging
+import threading
+
 
 class Threads(object):
 	thread_list = {}
@@ -36,7 +38,7 @@ class Threads(object):
 		self.logger.debug("Registered thread {0}".format(name))
 
 		return thread
-	
+
 	def getThreads(self):
 		return self.thread_list.keys()
 
