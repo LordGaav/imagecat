@@ -34,6 +34,8 @@ from argparse import ArgumentParser, SUPPRESS
 from imagecat.threads import Threads
 from imagecat.scheduler import Scheduler
 from imagecat.version import NAME
+from logging.handlers import WatchedFileHandler, SysLogHandler
+from logging import StreamHandler
 import logging
 import os
 import sys
@@ -53,7 +55,7 @@ def getLogger(name, level=logging.INFO, handlers=[]):
 		logger.setLevel(level)
 
 	if "console" in handlers:
-		strm = logging.StreamHandler()
+		strm = StreamHandler()
 		fmt = logging.Formatter('%(message)s')
 		strm.setLevel(level)
 		strm.setFormatter(fmt)
@@ -61,7 +63,7 @@ def getLogger(name, level=logging.INFO, handlers=[]):
 
 	if "file" in handlers:
 		conf = handlers['file']
-		fl = logging.handlers.WatchedFileHandler(conf['logfile'])
+		fl = WatchedFileHandler(conf['logfile'])
 		fl.setLevel(level)
 
 		fmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -69,7 +71,7 @@ def getLogger(name, level=logging.INFO, handlers=[]):
 		logger.addHandler(fl)
 
 	if "syslog" in handlers:
-		sysl = logging.handlers.SysLogHandler(address='/dev/log', facility=logging.handlers.SysLogHandler.LOG_SYSLOG)
+		sysl = SysLogHandler(address='/dev/log', facility=SysLogHandler.LOG_SYSLOG)
 		sysl.setLevel(level)
 
 		formatter = logging.Formatter('%(name)s[' + str(os.getpid()) + '] %(levelname)-8s: %(message)s')
