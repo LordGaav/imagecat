@@ -21,11 +21,13 @@ import setproctitle
 import signal
 import sys
 import time
-
-import imagecat
+from imagecat import ONCE, INTERVAL, signal_handler, config_handler, set_startarg
+from imagecat import getLogger as get_logger, reloadConfig as reload_config, initialize as imagecat_initialize,\
+	startAll as imagecat_startall
+from imagecat.version import NAME, VERSION, BUILD
 
 if sys.version_info < (2, 7):
-	print "Sorry, {0} requires Python 2.7.".format(imagecat.NAME)
+	print "Sorry, {0} requires Python 2.7.".format(NAME)
 	sys.exit(1)
 
 setproctitle.setproctitle("imagecat")
@@ -52,18 +54,18 @@ def initialize():
 	if not config_arg.quiet:
 		log_handlers['console'] = None
 
-	logger = imagecat.getLogger("imagecat", level=loglevel, handlers=log_handlers)
+	logger = get_logger("imagecat", level=loglevel, handlers=log_handlers)
 
 	if config_arg.version:
-		logger.info("{0} version {1} ({2})".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
+		logger.info("{0} version {1} ({2})".format(NAME, VERSION, BUILD))
 		sys.exit(0)
 
 	if not config_arg.help:
-		logger.info("{0} version {1} ({2}) starting...".format(imagecat.NAME, imagecat.VERSION, imagecat.BUILD))
+		logger.info("{0} version {1} ({2}) starting...".format(NAME, VERSION, BUILD))
 
-	imagecat.STARTARG = config_arg
+	set_startarg(config_arg)
 
-	imagecat.reloadConfig()
+	reload_config()
 
 	return logger
 
@@ -71,19 +73,19 @@ def initialize():
 def main():
 	logger = initialize()
 
-	if imagecat.ONCE:
+	if ONCE:
 		logger.info("Single run mode")
 		from imagecat.rotate import rotate_wallpapers
 		rotate_wallpapers()
 	else:
-		logger.info("Wallpapers will rotate every {0} seconds.".format(imagecat.INTERVAL))
+		logger.info("Wallpapers will rotate every {0} seconds.".format(INTERVAL))
 
-		signal.signal(signal.SIGINT, imagecat.signal_handler)
-		signal.signal(signal.SIGTERM, imagecat.signal_handler)
-		signal.signal(signal.SIGUSR1, imagecat.config_handler)
+		signal.signal(signal.SIGINT, signal_handler)
+		signal.signal(signal.SIGTERM, signal_handler)
+		signal.signal(signal.SIGUSR1, config_handler)
 
-		imagecat.initialize()
-		imagecat.startAll()
+		imagecat_initialize()
+		imagecat_startall()
 
 		# Stay alive to handle signals
 		while True:

@@ -17,7 +17,7 @@
 # along with imagecat. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from imagecat import NAME, VERSION
+from imagecat.version import NAME, VERSION
 from setuptools import setup
 import linecache
 

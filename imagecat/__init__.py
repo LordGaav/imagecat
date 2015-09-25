@@ -33,12 +33,17 @@ from configobj import ConfigObj
 from argparse import ArgumentParser, SUPPRESS
 from imagecat.threads import Threads
 from imagecat.scheduler import Scheduler
-from imagecat.version import NAME, VERSION, BUILD  # noqa
+from imagecat.version import NAME
 import logging
 import os
 import sys
 import inspect
 import tempfile
+
+
+def set_startarg(arg):
+	global STARTARG
+	STARTARG = arg
 
 
 def getLogger(name, level=logging.INFO, handlers=[]):

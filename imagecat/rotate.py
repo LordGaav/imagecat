@@ -21,7 +21,7 @@ from imagecat.globber import Globber
 from imagecat.image import cropresize, montage
 from imagecat.randomizer import Randomizer
 from imagecat.xrandr import XRandr
-import imagecat
+from imagecat import IMAGEDIR, DESKTOPS, TMPDIR
 import logging
 import platform
 import time
@@ -42,8 +42,8 @@ def select_images():
 	Select a set of images based on the current display configuration.
 	Returns a tuple containing display information, and the selected images.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "select_images"))
-	images = Globber(path=imagecat.IMAGEDIR, filter=['*.jpg', '*.jpeg', '*.gif', '*.png'], recursive=True).glob()
+	logger = logging.getLogger("{0}.{1}".format(__name__, "select_images"))
+	images = Globber(path=IMAGEDIR, filter=['*.jpg', '*.jpeg', '*.gif', '*.png'], recursive=True).glob()
 
 	logger.info("Found {0} images".format(len(images)))
 
@@ -55,9 +55,9 @@ def select_images():
 		return None
 
 	logger.info("Found {0} active displays ({1} total displays)".format(len(active_displays), len(xrandr.displays)))
-	logger.info("Found {0} desktops".format(imagecat.DESKTOPS))
+	logger.info("Found {0} desktops".format(DESKTOPS))
 
-	if len(images) < (len(active_displays) * imagecat.DESKTOPS):
+	if len(images) < (len(active_displays) * DESKTOPS):
 		logger.warn("Not enough images found for all displays and desktops, aborting...")
 		return None
 
@@ -67,7 +67,7 @@ def select_images():
 
 	# TODO: invalidate blacklist when checksum changes
 
-	selection = random.get_random(len(active_displays) * imagecat.DESKTOPS)
+	selection = random.get_random(len(active_displays) * DESKTOPS)
 
 	logger.info("Selected {0} random images".format(len(selection)))
 
@@ -80,12 +80,12 @@ def montage_images(displays, selection):
 	The end result is a set of Images that are the size of the total X viewport,
 	in which the source Images are pasted at the correct position.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "montage_images"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "montage_images"))
 
 	i = 0
 	wallpapers = []
 	offsets = map(lambda x: x['offset'], displays)
-	while i < imagecat.DESKTOPS:
+	while i < DESKTOPS:
 		logger.info("Generating wallpaper for desktop {0}".format(i))
 		tmp_images = []
 		for m in displays:
@@ -106,10 +106,10 @@ def set_wallpapers(wallpapers):
 	"""
 	Removes all old wallpaper files in TMPDIR, and saves the given set of wallpapers as files.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "set_wallpapers"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "set_wallpapers"))
 
 	logger.info("Remove old wallpaper files")
-	old_wallpapers = Globber(path=imagecat.TMPDIR, filter=['wallpaper-*.*'], recursive=False).glob()
+	old_wallpapers = Globber(path=TMPDIR, filter=['wallpaper-*.*'], recursive=False).glob()
 
 	for old in old_wallpapers:
 		logger.debug("Unlinking {0}".format(old))
@@ -118,7 +118,7 @@ def set_wallpapers(wallpapers):
 	j = 0
 	bg_images = []
 	for wallpaper in wallpapers:
-		filename = os.path.join(imagecat.TMPDIR, "wallpaper-{0}-{1}-{2}.png".format(j, os.getpid(), int(time.time())))
+		filename = os.path.join(TMPDIR, "wallpaper-{0}-{1}-{2}.png".format(j, os.getpid(), int(time.time())))
 		logger.info("Saving wallpaper {0} to {1}".format(j, filename))
 		wallpaper.save(filename, compress_level=0)
 		j += 1
@@ -131,7 +131,7 @@ def configure_compiz():
 	"""
 	Updates the appropriate settings for Compiz and Gnome, to enable Compiz to draw the background.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "configure_compiz"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "configure_compiz"))
 
 	gnome = Settings.GnomeSettings()
 	core = Settings.CorePluginSettings()
@@ -161,7 +161,7 @@ def update_config(bg_images):
 	"""
 	Updates the appropriate configuration settings, so that the new background images are displayed.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "update_config"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "update_config"))
 
 	settings = Settings.WallpaperPluginSettings()
 
@@ -189,7 +189,7 @@ def rotate_wallpapers():
 	Rotate the currently set wallpapers and select new ones randomly, based on the currently
 	connected displays.
 	"""
-	logger = imagecat.getLogger("{0}.{1}".format(__name__, "rotate_wallpapers"))
+	logger = logging.getLogger("{0}.{1}".format(__name__, "rotate_wallpapers"))
 	logger.info("Start rotation")
 
 	selection = select_images()
