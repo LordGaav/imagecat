@@ -119,7 +119,7 @@ class CorePluginSettings(GSettingsSettingsWrapper):
 	Retrieves settings for the Compiz Core plugin.
 	"""
 
-	default_profile = "unity"
+	default_profile = "Default"
 	""" Default GSettings profile to use. Ubuntu uses "unity" by default.  """
 	base_key = "/org/compiz/profiles/%s/plugins/core/"
 	""" Base key where the Core plugin keeps its settings in GSettings. """
@@ -146,7 +146,7 @@ class WallpaperPluginSettings(GSettingsSettingsWrapper):
 	Sets and retrieves settings for the Compiz Wallpaper plugin.
 	"""
 
-	default_profile = "unity"
+	default_profile = "Default"
 	""" Default GSettings profile to use. Ubuntu uses "unity" by default.  """
 	base_key = "/org/compiz/profiles/%s/plugins/wallpaper/"
 	""" Base key where the Wallpaper plugin keeps its settings in GSettings. """

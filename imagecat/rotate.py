@@ -40,6 +40,10 @@ else:
 	logging.getLogger("rotate.py").debug("Using GSettings backend.")
 	import imagecat.settings_gsettings as Settings
 
+	if platform.dist()[0] == "Ubuntu":
+		Settings.CorePluginSettings.default_profile = "unity"
+		Settings.WallpaperPluginSettings.default_profile = "unity"
+
 
 def select_images():
 	"""
