@@ -26,7 +26,11 @@ import logging
 import platform
 import time
 import os
-import Image
+
+try:
+	import Image
+except ImportError:
+	from PIL import Image
 
 
 if platform.dist()[0] == "Ubuntu" and platform.dist()[1] in ['12.04']:

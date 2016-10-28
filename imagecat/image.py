@@ -24,7 +24,10 @@ properly initiated PIL Image object.
 
 # I want PROPER divisions, please
 from __future__ import division
-import Image
+try:
+	import Image
+except ImportError:
+	from PIL import Image
 
 
 def cropresize(im, size, mode=Image.BICUBIC):
